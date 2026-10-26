@@ -1,0 +1,20 @@
+{
+  "appName": "pathwise",
+  "actions": {
+    "retry": "फिर से कोशिश करें",
+    "cancel": "रद्द करें"
+  },
+  "validation": {
+    "emailRequired": "ईमेल आवश्यक है",
+    "emailInvalid": "मान्य ईमेल पता दर्ज करें",
+    "passwordRequired": "पासवर्ड आवश्यक है",
+    "passwordTooShort": "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए",
+    "nameTooShort": "नाम कम से कम 2 अक्षरों का होना चाहिए",
+    "urlInvalid": "मान्य URL दर्ज करें"
+  },
+  "errors": {
+    "timeout": "अनुरोध का समय समाप्त हो गया। कृपया फिर से कोशिश करें।",
+    "network": "नेटवर्क त्रुटि। अपना कनेक्शन जांचें और फिर से कोशिश करें।",
+    "requestFailed": "अनुरोध विफल रहा (स्थिति {{status}})"
+  }
+}
