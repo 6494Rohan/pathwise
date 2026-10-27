@@ -1,14 +1,23 @@
 import React, { ComponentProps } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react-native';
+import { jobListing, mapCompany } from '../../test-utils/jobsFixtures';
 import CompanyJobsSheet from '../CompanyJobsSheet';
 
-const company = { id: 'c1', name: 'Axis Bank', coordinate: { latitude: 13, longitude: 75 }, openJobCount: 1 };
-const job = { id: 'j1', title: 'Sales Executive', location: 'Hebri', employmentType: 'fullTime' as const, salaryLpa: null };
+const company = mapCompany({ name: 'Axis Bank', city: 'Hebri', openJobCount: 1 });
+const job = jobListing({ title: 'Sales Executive', city: 'Hebri' });
 
 const renderSheet = (props: Partial<ComponentProps<typeof CompanyJobsSheet>> = {}) => {
-  const callbacks = { onRetry: jest.fn(), onClose: jest.fn() };
+  const callbacks = { onRetry: jest.fn(), onClose: jest.fn(), onLoadMore: jest.fn(), onShareJob: jest.fn(), onSaveJob: jest.fn() };
   const result = render(
-    <CompanyJobsSheet company={company} jobs={[job]} isLoading={false} isError={false} {...callbacks} {...props} />
+    <CompanyJobsSheet
+      company={company}
+      jobs={[job]}
+      isLoading={false}
+      isError={false}
+      isLoadingMore={false}
+      {...callbacks}
+      {...props}
+    />
   );
   return { ...callbacks, result };
 };
@@ -18,7 +27,7 @@ describe('CompanyJobsSheet', () => {
     await renderSheet().result;
 
     expect(screen.getByRole('header', { name: 'Axis Bank' })).toBeOnTheScreen();
-    expect(screen.getByText('Open jobs: 1')).toBeOnTheScreen();
+    expect(screen.getByText('Hebri · Open jobs: 1')).toBeOnTheScreen();
     expect(screen.getByText('Sales Executive')).toBeOnTheScreen();
   });
 
@@ -28,10 +37,11 @@ describe('CompanyJobsSheet', () => {
     expect(screen.queryByText('Sales Executive')).not.toBeOnTheScreen();
   });
 
-  it('shows a spinner instead of jobs while loading', async () => {
+  it('shows placeholder cards instead of jobs while loading', async () => {
     await renderSheet({ isLoading: true, jobs: undefined }).result;
 
     expect(screen.queryByText('Sales Executive')).not.toBeOnTheScreen();
+    expect(screen.getByRole('progressbar', { name: 'Loading jobs' })).toBeOnTheScreen();
   });
 
   it('says when the company has no open jobs', async () => {
@@ -57,5 +67,14 @@ describe('CompanyJobsSheet', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Close' }));
 
     expect(sheet.onClose).toHaveBeenCalled();
+  });
+
+  it('asks for more jobs when scrolled to the end', async () => {
+    const sheet = renderSheet();
+    await sheet.result;
+
+    await fireEvent(screen.getByTestId('company-jobs-list'), 'endReached');
+
+    expect(sheet.onLoadMore).toHaveBeenCalled();
   });
 });

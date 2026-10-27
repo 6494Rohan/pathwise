@@ -6,19 +6,23 @@ import { AppText } from '../typography';
 
 interface HeaderProps {
   title: string;
+  titleAccessory?: ReactNode;
   right?: ReactNode;
 }
 
-export default function Header({ title, right }: HeaderProps) {
+export default function Header({ title, titleAccessory, right }: HeaderProps) {
   const { colors } = useTheme();
   const styles = createStyles(colors);
   const { top } = useSafeAreaInsets();
 
   return (
     <View style={[styles.header, { paddingTop: top + spacing[12] }]}>
-      <AppText variant="heading1" accessibilityRole="header" style={styles.title}>
-        {title}
-      </AppText>
+      <View style={styles.titleRow}>
+        <AppText variant="heading1" accessibilityRole="header">
+          {title}
+        </AppText>
+        {titleAccessory}
+      </View>
       {right ? <View style={styles.actions}>{right}</View> : null}
     </View>
   );
@@ -34,8 +38,11 @@ const createStyles = (colors: ThemeColors) =>
       paddingBottom: spacing[12],
       backgroundColor: colors.bgCanvas,
     },
-    title: {
+    titleRow: {
       flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing[8],
     },
     actions: {
       flexDirection: 'row',

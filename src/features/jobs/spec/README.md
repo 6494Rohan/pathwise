@@ -1,6 +1,6 @@
 # Jobs feature spec
 
-The Jobs tab (`OpportunitiesScreen`) has four sections (`JobsSectionTabs`): Recommended, All Jobs, Saved, Applied. Only **All Jobs** is built: a map of companies with open jobs, with a location search bar (`LocationSearchBar`) and a map/list toggle (`ViewModeToggle`; list view is a placeholder). Tapping a company pin opens a sheet with its job postings. The Jobs header has `ShareAppButton` (share sheet with an invite message; add a store link once the app is published). Data is **dummy** until the jobs API exists.
+The Jobs tab (`OpportunitiesScreen`) has four sections (`JobsSectionTabs`): Recommended, All Jobs, Saved, Applied. Only **All Jobs** is built: a map of companies with open jobs, with a location search bar (`LocationSearchBar`), zoom in/out and my-location buttons (`MapControls`) and a map/list toggle (`ViewModeToggle`; list view is a placeholder). Tapping a company pin opens a sheet with its job postings. The Jobs header has `ShareAppButton` (share sheet with an invite message; add a store link once the app is published). Data is **dummy** until the jobs API exists.
 
 ## Setup: Google Maps key (Android)
 
@@ -15,11 +15,16 @@ iOS uses Apple Maps and needs no key.
 
 ## Location search
 
-Search runs while typing: `usePlaceSearch` waits for a 600 ms pause (`useDebouncedValue`) and at least 3 characters, then `useSearchPlace(query)` (React Query, cached per query) → `placeService.searchPlace` → `expo-location` `geocodeAsync` (the phone's geocoder: free, no API key, no suggestions) → `acl/locationMapper` → `JobsMap` flies there and drops a brand pin. The pause matters: the geocoder fails when called too often.
+Search runs while typing: `usePlaceSearch` waits for a 600 ms pause (`useDebouncedValue`) and at least 3 characters, then `useSearchPlace(query)` (React Query, cached per query) → `locationService.searchPlace` → `expo-location` `geocodeAsync` (the phone's geocoder: free, no API key, no suggestions) → `acl/locationMapper` → `JobsMap` flies there and drops a brand pin. The pause matters: the geocoder fails when called too often.
 
 - **Location permission comes first.** Android's geocoder only works after `requestForegroundPermissionsAsync`, so the first search shows the system prompt. Denied → "Allow location access to search places." The prompt text for iOS is `PERMISSIONS.location` in `app.config.ts`.
-- **Errors** are `PlaceSearchError` codes. `notFound` is deliberately silent (the map just doesn't move); `permissionDenied` and `unknown` show `search.errors.<code>` under the bar.
+- **Errors** are `LocationError` codes. `notFound` is deliberately silent (the map just doesn't move); `permissionDenied` and `unknown` show `search.errors.<code>` under the bar.
 - **Live suggestions** would need Google Places API (New), which is paid per request; not chosen yet.
+
+## Map controls
+
+- **Zoom** halves or doubles the visible area around the current centre through `JobsMap`'s handle (`ref` → `zoomBy`, `flyTo`).
+- **My location:** `useCurrentLocation` (mutation, run on tap) → `locationService.getCurrentLocation` (permission, then `getCurrentPositionAsync`, balanced accuracy) → `flyTo`. After the first success the map shows the native blue dot (`showsUserLocation`); the native my-location button stays off because `MapControls` replaces it. Permission denied or no fix → an alert (`locate.errors.*`).
 
 ## Data flow
 
@@ -42,4 +47,4 @@ Search runs while typing: `usePlaceSearch` waits for a 600 ms pause (`useDebounc
 
 ## Not built yet
 
-Recommended, Saved and Applied sections (and their counts), All Jobs list view, place suggestions while typing, filters, "my location" button, job detail screen, company names next to pins, real API.
+Recommended, Saved and Applied sections (and their counts), All Jobs list view, place suggestions while typing, filters job detail screen, company names next to pins, real API.

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, FlatList, Modal, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, Modal, Pressable, StyleSheet, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,22 +7,39 @@ import { Button } from '@/components/button';
 import { AppText } from '@/components/typography';
 import { radius, spacing, ThemeColors, useTheme } from '@/theme';
 import { moderateScale } from '@/utils/scaling';
-import type { JobPosting, MapCompany } from '../types/jobs.types';
-import JobPostingCard from './JobPostingCard';
+import type { JobListing, MapCompany } from '../types/jobs.types';
+import JobListingCard from './JobListingCard';
+import JobListSkeleton from './JobListSkeleton';
 
 const CLOSE_ICON_SIZE = moderateScale(22);
 const CLOSE_HIT_SLOP = spacing[12];
+const SKELETON_CARDS = 3;
 
 interface CompanyJobsSheetProps {
   company: MapCompany | null;
-  jobs: JobPosting[] | undefined;
+  jobs: JobListing[] | undefined;
   isLoading: boolean;
   isError: boolean;
+  isLoadingMore: boolean;
+  onLoadMore: () => void;
   onRetry: () => void;
   onClose: () => void;
+  onShareJob: (job: JobListing) => void;
+  onSaveJob: (job: JobListing) => void;
 }
 
-export default function CompanyJobsSheet({ company, jobs, isLoading, isError, onRetry, onClose }: CompanyJobsSheetProps) {
+export default function CompanyJobsSheet({
+  company,
+  jobs,
+  isLoading,
+  isError,
+  isLoadingMore,
+  onLoadMore,
+  onRetry,
+  onClose,
+  onShareJob,
+  onSaveJob,
+}: CompanyJobsSheetProps) {
   const { t } = useTranslation(['jobs', 'common']);
   const { colors } = useTheme();
   const styles = createStyles(colors);
@@ -38,14 +55,16 @@ export default function CompanyJobsSheet({ company, jobs, isLoading, isError, on
             <AppText variant="heading2" accessibilityRole="header">
               {company?.name}
             </AppText>
-            <AppText variant="bodySmall">{t('sheet.openJobs', { count: company?.openJobCount ?? 0 })}</AppText>
+            <AppText variant="bodySmall">
+              {t('sheet.cityOpenJobs', { city: company?.city ?? '', count: company?.openJobCount ?? 0 })}
+            </AppText>
           </View>
           <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel={t('sheet.close')} hitSlop={CLOSE_HIT_SLOP}>
             <Ionicons name="close" size={CLOSE_ICON_SIZE} color={colors.iconDefault} />
           </Pressable>
         </View>
         {isLoading ? (
-          <ActivityIndicator color={colors.iconBrand} style={styles.status} />
+          <JobListSkeleton cardCount={SKELETON_CARDS} />
         ) : isError ? (
           <View style={styles.status}>
             <AppText variant="bodySmall" color="statusDanger">
@@ -55,11 +74,15 @@ export default function CompanyJobsSheet({ company, jobs, isLoading, isError, on
           </View>
         ) : (
           <FlatList
+            testID="company-jobs-list"
             data={jobs}
             keyExtractor={(job) => job.id}
-            renderItem={({ item }) => <JobPostingCard job={item} />}
+            renderItem={({ item }) => <JobListingCard job={item} onShare={onShareJob} onSave={onSaveJob} />}
             contentContainerStyle={styles.list}
+            onEndReached={onLoadMore}
+            onEndReachedThreshold={0.5}
             ListEmptyComponent={<AppText variant="bodySmall">{t('sheet.noJobs')}</AppText>}
+            ListFooterComponent={isLoadingMore ? <JobListSkeleton cardCount={1} /> : undefined}
           />
         )}
       </View>

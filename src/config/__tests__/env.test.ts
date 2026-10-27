@@ -1,4 +1,9 @@
-const VARIABLES = ['EXPO_PUBLIC_APP_VARIANT', 'EXPO_PUBLIC_API_URL', 'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID'] as const;
+const VARIABLES = [
+  'EXPO_PUBLIC_APP_VARIANT',
+  'EXPO_PUBLIC_API_URL',
+  'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID',
+  'EXPO_PUBLIC_WEB_URL',
+] as const;
 
 const loadEnv = (values: Partial<Record<(typeof VARIABLES)[number], string>>) => {
   const saved = VARIABLES.map((name) => [name, process.env[name]] as const);
@@ -31,11 +36,13 @@ describe('env', () => {
         EXPO_PUBLIC_APP_VARIANT: 'qa',
         EXPO_PUBLIC_API_URL: 'https://api.test.com',
         EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: 'web-client.apps.googleusercontent.com',
+        EXPO_PUBLIC_WEB_URL: 'https://main.example.amplifyapp.com',
       })
     ).toEqual({
       EXPO_PUBLIC_APP_VARIANT: 'qa',
       EXPO_PUBLIC_API_URL: 'https://api.test.com',
       EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: 'web-client.apps.googleusercontent.com',
+      EXPO_PUBLIC_WEB_URL: 'https://main.example.amplifyapp.com',
     });
   });
 

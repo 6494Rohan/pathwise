@@ -31,7 +31,7 @@ describe('AppNavigator', () => {
     await fireEvent.press(await screen.findByRole('tab', { name: 'Profile' }));
 
     jest.mocked(getCurrentUser).mockRejectedValueOnce(signedOut);
-    await fireEvent.press(screen.getByRole('button', { name: 'Sign out' }));
+    await fireEvent.press(await screen.findByRole('button', { name: 'Sign out' }, { timeout: 2000 }));
 
     expect(await screen.findByRole('button', { name: 'Sign up' })).toBeOnTheScreen();
     expect(screen.getByRole('header', { name: 'Profile' })).toBeOnTheScreen();

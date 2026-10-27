@@ -1,11 +1,19 @@
-import { toJobPostings, toMapCompanies } from '../acl/jobsMapper';
-import { dummyCompanyJobsResponse, dummyMapCompaniesResponse } from './dummyJobsData';
+import { api } from '@/services/api';
+import {
+  toJobFilterOptions,
+  toJobFilterParams,
+  toJobListingsPage,
+  toJobsQueryParams,
+  toMapCompanies,
+} from '../acl/jobsMapper';
+import type { JobListFilters, JobSort } from '../types/jobs.types';
 
-// Dummy data until the jobs API exists: replace `respond(...)` with `api.get(...)`; the mappers stay.
-const DUMMY_LATENCY_MS = 400;
-const respond = (data: unknown) => new Promise<unknown>((resolve) => setTimeout(() => resolve(data), DUMMY_LATENCY_MS));
+export const JOBS_PAGE_SIZE = 20;
 
 export const jobsService = {
-  getMapCompanies: async () => toMapCompanies(await respond(dummyMapCompaniesResponse)),
-  getCompanyJobs: async (companyId: string) => toJobPostings(await respond(dummyCompanyJobsResponse(companyId))),
+  listJobs: async (filters: JobListFilters, page: number, sort?: JobSort) =>
+    toJobListingsPage(await api.get('/jobs', { params: toJobsQueryParams(filters, page, JOBS_PAGE_SIZE, sort) })),
+  getMapCompanies: async (filters: JobListFilters) =>
+    toMapCompanies(await api.get('/jobs/map', { params: toJobFilterParams(filters) })),
+  getFilterOptions: async () => toJobFilterOptions(await api.get('/jobs/filters')),
 };

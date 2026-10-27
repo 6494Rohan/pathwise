@@ -30,6 +30,8 @@ describe('TabNavigator', () => {
 
     expect(screen.getByRole('tab', { name: 'Profile' })).toBeSelected();
     expect(screen.getByRole('header', { name: 'Profile' })).toBeOnTheScreen();
-    expect(screen.getByRole('button', { name: 'Sign out' })).toBeOnTheScreen();
+    expect(await screen.findByRole('button', { name: 'Sign out' }, { timeout: 2000 })).toBeOnTheScreen();
+    expect(await screen.findByText('MCSQ9387')).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: 'Upload Resume' })).not.toBeOnTheScreen();
   });
 });

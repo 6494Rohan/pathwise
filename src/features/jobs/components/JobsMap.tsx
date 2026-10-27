@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/theme';
 import { useMapClusters } from '../hooks/useMapClusters';
+import { isAtZoomLimit, MAX_ZOOM, MIN_ZOOM, useZoomHaptics, zoomHaptics, zoomOf } from '../hooks/useZoomHaptics';
 import type { Coordinate, MapCompany } from '../types/jobs.types';
 import ClusterPin from './ClusterPin';
 import CompanyPin from './CompanyPin';
@@ -13,24 +14,51 @@ const INITIAL_REGION: Region = { latitude: 13.34, longitude: 74.9, latitudeDelta
 const ZOOM_ANIMATION_MS = 350;
 const PLACE_DELTA = 0.3;
 
+const regionAround = (coordinate: Coordinate): Region => ({
+  ...coordinate,
+  latitudeDelta: PLACE_DELTA,
+  longitudeDelta: PLACE_DELTA,
+});
+
+export interface JobsMapHandle {
+  zoomBy: (factor: number) => void;
+  flyTo: (coordinate: Coordinate) => void;
+}
+
 interface JobsMapProps {
   companies: MapCompany[];
   onCompanyPress: (company: MapCompany) => void;
   searchedPlace: { name: string; coordinate: Coordinate } | null;
+  showsUserLocation: boolean;
+  ref?: Ref<JobsMapHandle>;
 }
 
-export default function JobsMap({ companies, onCompanyPress, searchedPlace }: JobsMapProps) {
+export default function JobsMap({ companies, onCompanyPress, searchedPlace, showsUserLocation, ref }: JobsMapProps) {
   const { t } = useTranslation('jobs');
   const mapRef = useRef<MapView>(null);
   const { colors, isDark } = useTheme();
   const colorScheme = isDark ? 'dark' : 'light';
   const [region, setRegion] = useState(INITIAL_REGION);
   const points = useMapClusters(companies, region);
+  const [mapWidth, setMapWidth] = useState(0);
+  const onRegionChange = useZoomHaptics(mapWidth);
+
+  const animateTo = (target: Region) => mapRef.current?.animateToRegion(target, ZOOM_ANIMATION_MS);
+
+  useImperativeHandle(ref, () => ({
+    zoomBy: (factor) => {
+      if (mapWidth && isAtZoomLimit(zoomOf(region, mapWidth), factor < 1 ? 'in' : 'out')) {
+        zoomHaptics.bump();
+        return;
+      }
+      zoomHaptics.tap();
+      animateTo({ ...region, latitudeDelta: region.latitudeDelta * factor, longitudeDelta: region.longitudeDelta * factor });
+    },
+    flyTo: (coordinate) => animateTo(regionAround(coordinate)),
+  }));
 
   useEffect(() => {
-    if (!searchedPlace) return;
-    const placeRegion = { ...searchedPlace.coordinate, latitudeDelta: PLACE_DELTA, longitudeDelta: PLACE_DELTA };
-    mapRef.current?.animateToRegion(placeRegion, ZOOM_ANIMATION_MS);
+    if (searchedPlace) mapRef.current?.animateToRegion(regionAround(searchedPlace.coordinate), ZOOM_ANIMATION_MS);
   }, [searchedPlace]);
 
   return (
@@ -40,9 +68,15 @@ export default function JobsMap({ companies, onCompanyPress, searchedPlace }: Jo
       ref={mapRef}
       testID="jobs-map"
       style={StyleSheet.absoluteFill}
+      onLayout={(event) => setMapWidth(event.nativeEvent.layout.width)}
+      minZoomLevel={MIN_ZOOM}
+      maxZoomLevel={MAX_ZOOM}
       userInterfaceStyle={colorScheme}
       initialRegion={region}
+      onRegionChange={onRegionChange}
       onRegionChangeComplete={setRegion}
+      showsUserLocation={showsUserLocation}
+      showsMyLocationButton={false}
       toolbarEnabled={false}
     >
       {points.map((point) =>
@@ -51,7 +85,7 @@ export default function JobsMap({ companies, onCompanyPress, searchedPlace }: Jo
             key={point.key}
             coordinate={point.coordinate}
             accessibilityLabel={t('map.clusterPin', { count: point.companyCount })}
-            onPress={() => mapRef.current?.animateToRegion(point.expansionRegion, ZOOM_ANIMATION_MS)}
+            onPress={() => animateTo(point.expansionRegion)}
           >
             <ClusterPin companyCount={point.companyCount} />
           </PinMarker>

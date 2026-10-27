@@ -3,7 +3,8 @@
   "title": "अवसर",
   "share": {
     "label": "साझा करें",
-    "message": "pathwise पर नौकरियाँ खोजें, कौशल बनाएँ और सीखते रहें।"
+    "message": "pathwise पर नौकरियाँ खोजें, कौशल बनाएँ और सीखते रहें।",
+    "messageWithLink": "pathwise पर नौकरियाँ खोजें, कौशल बनाएँ और सीखते रहें: {{url}}"
   },
   "sections": {
     "recommended": "सुझाई गई",
@@ -23,20 +24,28 @@
       "unknown": "खोज विफल रही। कृपया फिर से कोशिश करें।"
     }
   },
+  "locate": {
+    "errors": {
+      "permissionDenied": "आप कहाँ हैं यह देखने के लिए लोकेशन की अनुमति दें।",
+      "unknown": "आपका स्थान नहीं मिल सका। कृपया फिर से कोशिश करें।"
+    }
+  },
   "map": {
     "loading": "आपके आस-पास की नौकरियाँ लोड हो रही हैं…",
     "loadError": "मानचित्र पर नौकरियाँ लोड नहीं हो सकीं।",
     "companyPin": "{{name}}, खुली नौकरियाँ: {{count}}",
-    "clusterPin": "यहाँ {{count}} कंपनियाँ हैं। ज़ूम करने के लिए टैप करें।"
+    "clusterPin": "यहाँ {{count}} कंपनियाँ हैं। ज़ूम करने के लिए टैप करें।",
+    "zoomIn": "ज़ूम इन करें",
+    "zoomOut": "ज़ूम आउट करें",
+    "myLocation": "मेरा स्थान दिखाएँ"
   },
   "sheet": {
-    "openJobs": "खुली नौकरियाँ: {{count}}",
     "close": "बंद करें",
     "loadError": "इस कंपनी की नौकरियाँ लोड नहीं हो सकीं।",
-    "noJobs": "अभी कोई खुली नौकरी नहीं है।"
+    "noJobs": "अभी कोई खुली नौकरी नहीं है।",
+    "cityOpenJobs": "{{city}} · खुली नौकरियाँ: {{count}}"
   },
   "job": {
-    "meta": "{{location}} · {{employmentType}}",
     "salaryLpa": "₹{{min}}–{{max}} LPA",
     "salaryNotDisclosed": "वेतन नहीं बताया गया",
     "employmentType": {
@@ -44,6 +53,68 @@
       "partTime": "अंशकालिक",
       "internship": "इंटर्नशिप",
       "contract": "अनुबंध"
+    },
+    "workMode": {
+      "onSite": "ऑन-साइट",
+      "remote": "रिमोट",
+      "hybrid": "हाइब्रिड"
+    },
+    "experienceRange": "{{min}}–{{max}} वर्ष",
+    "experienceFrom": "{{min}}+ वर्ष",
+    "verified": "सत्यापित कंपनी",
+    "moreSkills": "+{{count}}",
+    "postedJustNow": "अभी",
+    "postedHoursAgo": "{{count}} घंटे पहले",
+    "postedDaysAgo": "{{count}} दिन पहले",
+    "distanceKm": "{{distance}} किमी दूर",
+    "listingMeta": "{{location}} · {{employmentType}} · {{workMode}}"
+  },
+  "list": {
+    "loadError": "नौकरियाँ लोड नहीं हो सकीं।",
+    "empty": "अभी कोई मेल खाती नौकरी नहीं है।",
+    "loading": "नौकरियाँ लोड हो रही हैं"
+  },
+  "filters": {
+    "open": "फ़िल्टर",
+    "activeCount": "फ़िल्टर, {{count}} चालू",
+    "verified": "सत्यापित",
+    "last24Hours": "पिछले 24 घंटे",
+    "age": {
+      "0-3": "0–3 दिन",
+      "3-7": "3–7 दिन",
+      "7-15": "7–15 दिन",
+      "15-30": "15–30 दिन",
+      "30+": "30+ दिन"
+    },
+    "title": "फ़िल्टर",
+    "experience": "आपका अनुभव",
+    "fresher": "फ्रेशर",
+    "years": "{{count}} वर्ष",
+    "skills": "कौशल",
+    "companies": "कंपनियाँ",
+    "clear": "सब हटाएँ",
+    "apply": "नौकरियाँ दिखाएँ",
+    "close": "फ़िल्टर बंद करें"
+  },
+  "jobSearch": {
+    "placeholder": "नौकरी, कौशल, कंपनी, स्थान खोजें",
+    "clear": "खोज साफ़ करें"
+  },
+  "listHeader": {
+    "count": "{{count}} नौकरियाँ",
+    "sortLabel": "क्रम: {{option}}",
+    "sortTitle": "क्रम चुनें",
+    "sortClose": "क्रम बंद करें",
+    "sortOptions": {
+      "newest": "सबसे नई",
+      "oldest": "सबसे पुरानी",
+      "salary": "सबसे ज़्यादा वेतन"
     }
+  },
+  "jobActions": {
+    "share": "{{title}} साझा करें",
+    "save": "{{title}} सहेजें",
+    "shareMessage": "pathwise पर {{company}} में {{title}}: {{url}}",
+    "postedAt": "{{when}} पोस्ट हुई"
   }
 }

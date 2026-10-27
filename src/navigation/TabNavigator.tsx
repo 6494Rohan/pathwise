@@ -14,7 +14,7 @@ import SkillsIcon from '@/assets/icons/tabs/skills.svg';
 import { Header } from '@/components/common';
 import { OpportunitiesScreen, ShareAppButton } from '@/features/jobs';
 import { LearningScreen } from '@/features/learning';
-import { ProfileScreen } from '@/features/profile';
+import { ProfileScreen, ProfileTitleBadge } from '@/features/profile';
 import { SkillsScreen } from '@/features/skills';
 import AppTabBar from './components/AppTabBar';
 import HeaderPrimaryAction from './components/HeaderPrimaryAction';
@@ -25,31 +25,46 @@ interface TabConfig {
   component: ComponentType;
   namespace: 'jobs' | 'skills' | 'learning' | 'profile';
   Icon: ComponentType<SvgProps>;
+  TitleAccessory?: ComponentType;
   HeaderActions?: ComponentType;
+  hidesPrimaryAction?: boolean;
 }
 
 const TABS: TabConfig[] = [
   { name: 'Jobs', component: OpportunitiesScreen, namespace: 'jobs', Icon: JobsIcon, HeaderActions: ShareAppButton },
   { name: 'Skills', component: SkillsScreen, namespace: 'skills', Icon: SkillsIcon },
   { name: 'Learning', component: LearningScreen, namespace: 'learning', Icon: LearningIcon },
-  { name: 'Profile', component: ProfileScreen, namespace: 'profile', Icon: ProfileIcon },
+  {
+    name: 'Profile',
+    component: ProfileScreen,
+    namespace: 'profile',
+    Icon: ProfileIcon,
+    TitleAccessory: ProfileTitleBadge,
+    hidesPrimaryAction: true,
+  },
 ];
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
 const renderTabBar = (props: BottomTabBarProps) => <AppTabBar {...props} />;
 
-const renderHeader = ({ options, route }: BottomTabHeaderProps) => (
-  <Header
-    title={options.title ?? route.name}
-    right={
-      <>
-        <HeaderPrimaryAction />
-        {options.headerRight?.({ canGoBack: false })}
-      </>
-    }
-  />
-);
+const renderHeader = ({ options, route }: BottomTabHeaderProps) => {
+  const tab = TABS.find(({ name }) => name === route.name);
+  const TitleAccessory = tab?.TitleAccessory;
+
+  return (
+    <Header
+      title={options.title ?? route.name}
+      titleAccessory={TitleAccessory ? <TitleAccessory /> : null}
+      right={
+        <>
+          {tab?.hidesPrimaryAction ? null : <HeaderPrimaryAction />}
+          {options.headerRight?.({ canGoBack: false })}
+        </>
+      }
+    />
+  );
+};
 
 const screenOptions: BottomTabNavigationOptions = { header: renderHeader, tabBarHideOnKeyboard: true };
 

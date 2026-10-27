@@ -1,5 +1,39 @@
 {
   "tabTitle": "Profile",
   "title": "Profile",
-  "uploadResume": "Upload Resume"
+  "uploadResume": "Upload Resume",
+  "plan": {
+    "guest": "Guest",
+    "pro": "Pro"
+  },
+  "summary": {
+    "editProfile": "Edit profile",
+    "notSet": "N/A",
+    "preferredLocations": "Preferred work locations"
+  },
+  "resume": {
+    "type": {
+      "pdf": "PDF · Resume",
+      "doc": "DOC · Resume"
+    },
+    "upload": "Upload a new resume",
+    "download": "Download resume",
+    "empty": "No resume yet"
+  },
+  "sections": {
+    "experience": "Experience",
+    "education": "Education",
+    "add": "Add {{section}}",
+    "edit": "Edit {{section}}",
+    "empty": "Nothing added yet."
+  },
+  "period": {
+    "range": "{{start}} – {{end}}",
+    "present": "Present"
+  },
+  "guest": {
+    "title": "Build your profile",
+    "body": "Sign up to add your experience, education and resume, and get jobs that match you."
+  },
+  "loadError": "Couldn't load your profile."
 }

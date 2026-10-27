@@ -1,13 +1,10 @@
 import { renderHook } from '@testing-library/react-native';
+import { mapCompany } from '../../test-utils/jobsFixtures';
 import type { MapCompany } from '../../types/jobs.types';
 import { useMapClusters } from '../useMapClusters';
 
-const company = (id: string, latitude: number, longitude: number): MapCompany => ({
-  id,
-  name: `Company ${id}`,
-  coordinate: { latitude, longitude },
-  openJobCount: 2,
-});
+const company = (id: string, latitude: number, longitude: number): MapCompany =>
+  mapCompany({ id, companyId: id, name: `Company ${id}`, coordinate: { latitude, longitude }, openJobCount: 2 });
 
 const companies = [company('a', 13.34, 74.74), company('b', 13.341, 74.741), company('far', 12.87, 74.84)];
 

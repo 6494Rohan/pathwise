@@ -40,7 +40,7 @@ npx ampx sandbox --once     # deploy your Amplify sandbox backend and write ampl
 | `src/theme/` | Design tokens: `colors.ts` (`lightColors` + `darkColors`), `spacing.ts`, `radius.ts`, `typography.ts`, and `useTheme()`. |
 | `src/utils/scaling.ts` | `scale`, `verticalScale`, `moderateScale`, `fontScale` (clamped to the phone size range, pixel-rounded). Used by the theme; see **Sizing and scaling** for direct use. |
 | `src/utils/validation.ts` | `validateForm(schema, values)` for form field errors. |
-| `src/navigation/` | React Navigation navigators (this project does **not** use Expo Router). `TabNavigator` builds the bottom tabs from its `TABS` config (route, screen, i18n namespace, icon); each tab's label is `<namespace>:tabTitle` and its header title `<namespace>:title`. The tab bar is the custom `components/AppTabBar` (it honours `tabBarHideOnKeyboard`, on for all tabs) and every tab gets the shared `Header` (with `headerRight` actions) through `screenOptions`. Tab screens use `<SafeAreaScreen edges={[]}>` because the header and tab bar already apply the insets. |
+| `src/navigation/` | React Navigation navigators (this project does **not** use Expo Router). `TabNavigator` builds the bottom tabs from its `TABS` config (route, screen, i18n namespace, icon); each tab's label is `<namespace>:tabTitle` and its header title `<namespace>:title`. The tab bar is the custom `components/AppTabBar` (it honours `tabBarHideOnKeyboard`, on for all tabs) and every tab gets the shared `Header` (with `headerRight` actions) through `screenOptions`. Tab screens use `<SafeAreaScreen edges={[]}>` because the header and tab bar already apply the insets. Deep links: `linking.ts` maps paths to screens for `pathwise://` and the web host (setup in [`hosting/README.md`](hosting/README.md)); add a path when you add a screen. |
 | `src/services/amplify.ts`, `src/services/secureTokenStorage.ts` | App-wide Amplify setup and token storage — see the [auth spec](src/features/auth/spec/README.md). |
 | `amplify/` | Amplify Gen 2 backend, deployed per developer with `npx ampx sandbox --once`. Typecheck with `npx tsc -p amplify --noEmit`. Details in the [auth spec](src/features/auth/spec/setup.md). |
 | `plugins/` | Expo config plugins (`withAndroidImeInsets` keeps content above the Android keyboard). Native: changing one needs `npm run build`. |
@@ -78,6 +78,7 @@ Feature-specific context lives with the feature, not in this file. A feature tha
 |---|---|
 | [`src/features/auth/spec/`](src/features/auth/spec/README.md) | `src/features/auth/`, `src/services/amplify.ts`, `src/services/secureTokenStorage.ts`, `amplify/`, `plugins/withAndroidImeInsets.js`, or anything about sign-in, the session or tokens |
 | [`src/features/jobs/spec/`](src/features/jobs/spec/README.md) | `src/features/jobs/`, the map, or the `react-native-maps` plugin in `app.config.ts` |
+| [`src/features/profile/spec/`](src/features/profile/spec/README.md) | `src/features/profile/`, resume upload or parsing |
 
 - **Read the relevant `spec/` before changing that code.** Add a row here when a new feature gets a spec.
 - **Update the spec in the same change** when behaviour, setup, a decision or the status changes. A stale spec is worse than none.

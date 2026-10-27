@@ -56,6 +56,20 @@ function googleSignInPlugin() {
   return iosUrlScheme ? [["@react-native-google-signin/google-signin", { iosUrlScheme }]] : [];
 }
 
+// Android App Links: verified against /.well-known/assetlinks.json on the web host (hosting/ folder).
+function appLinkIntentFilters() {
+  const webUrl = process.env.EXPO_PUBLIC_WEB_URL;
+  if (!webUrl) return [];
+  return [
+    {
+      action: "VIEW",
+      autoVerify: true,
+      data: [{ scheme: "https", host: new URL(webUrl).host }],
+      category: ["BROWSABLE", "DEFAULT"],
+    },
+  ];
+}
+
 function getAdaptiveIcon() {
   return getIconPath("adaptive-icon");
 }
@@ -71,7 +85,7 @@ export default {
     resizeMode: "cover",
     backgroundColor: "#000000",
   },
-  scheme: getBundleIdentifier(),
+  scheme: ["pathwise", getBundleIdentifier()],
   userInterfaceStyle: "automatic",
   experiments: {
     reactCompiler: true,
@@ -91,6 +105,7 @@ export default {
       foregroundImage: getAdaptiveIcon(),
       backgroundColor: "#ffffff",
     },
+    intentFilters: appLinkIntentFilters(),
   },
   plugins: [
     [

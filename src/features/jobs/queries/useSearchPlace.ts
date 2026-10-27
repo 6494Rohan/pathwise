@@ -1,11 +1,11 @@
 import { skipToken, useQuery } from '@tanstack/react-query';
-import { placeService } from '../services/placeService';
+import { locationService } from '../services/locationService';
 import { jobsKeys } from './jobsKeys';
 
 export const useSearchPlace = (query: string) =>
   useQuery({
     queryKey: jobsKeys.placeSearch(query),
-    queryFn: query ? () => placeService.searchPlace(query) : skipToken,
+    queryFn: query ? () => locationService.searchPlace(query) : skipToken,
     staleTime: Infinity,
     retry: false,
   });

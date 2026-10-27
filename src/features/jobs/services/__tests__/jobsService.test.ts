@@ -1,33 +1,38 @@
-import { dummyCompanyJobsResponse, dummyMapCompaniesResponse } from '../dummyJobsData';
-import { jobsService } from '../jobsService';
+import { api } from '@/services/api';
+import { JOBS_PAGE_SIZE, jobsService } from '../jobsService';
+
+jest.mock('@/services/api', () => ({ api: { get: jest.fn() } }));
 
 describe('jobsService', () => {
-  beforeEach(() => jest.useFakeTimers());
-  afterEach(() => jest.useRealTimers());
+  it('lists jobs from GET /jobs with the filters and page', async () => {
+    jest.mocked(api.get).mockResolvedValue({ jobs: [], page: 2, page_size: JOBS_PAGE_SIZE, total: 0 });
 
-  const settle = async <T>(promise: Promise<T>) => {
-    await jest.runAllTimersAsync();
-    return promise;
-  };
-
-  it('returns every dummy company as a map company', async () => {
-    const companies = await settle(jobsService.getMapCompanies());
-
-    expect(companies).toHaveLength(dummyMapCompaniesResponse.companies.length);
-    expect(companies[0]).toEqual(
-      expect.objectContaining({ id: 'c1', name: 'Tata Motors Finance', openJobCount: 4 })
-    );
+    await expect(jobsService.listJobs({ verifiedOnly: true }, 2)).resolves.toEqual({
+      jobs: [],
+      page: 2,
+      pageSize: JOBS_PAGE_SIZE,
+      total: 0,
+    });
+    expect(api.get).toHaveBeenCalledWith('/jobs', { params: { verified: 'true', page: 2, pageSize: JOBS_PAGE_SIZE } });
   });
 
-  it("returns one posting per open job of the company", async () => {
-    const jobs = await settle(jobsService.getCompanyJobs('c2'));
+  it('loads map pins from GET /jobs/map with the same filters and no paging', async () => {
+    jest.mocked(api.get).mockResolvedValue({ pins: [] });
 
-    expect(jobs).toHaveLength(1);
-    expect(jobs[0]).toEqual(expect.objectContaining({ id: 'c2-j1', location: 'Hebri' }));
+    await expect(jobsService.getMapCompanies({ verifiedOnly: true })).resolves.toEqual([]);
+    expect(api.get).toHaveBeenCalledWith('/jobs/map', { params: { verified: 'true' } });
   });
 
-  it('returns no jobs for an unknown company', async () => {
-    expect(dummyCompanyJobsResponse('missing')).toEqual({ jobs: [] });
-    await expect(settle(jobsService.getCompanyJobs('missing'))).resolves.toEqual([]);
+  it('loads filter options from GET /jobs/filters', async () => {
+    jest.mocked(api.get).mockResolvedValue({ skills: [], companies: [] });
+
+    await expect(jobsService.getFilterOptions()).resolves.toEqual({ skills: [], companies: [] });
+    expect(api.get).toHaveBeenCalledWith('/jobs/filters');
+  });
+
+  it('rejects responses that do not match the backend shape', async () => {
+    jest.mocked(api.get).mockResolvedValue({ unexpected: true });
+
+    await expect(jobsService.listJobs({}, 1)).rejects.toThrow();
   });
 });

@@ -52,4 +52,13 @@ jest.mock('react-native-maps', () => {
 jest.mock('expo-location', () => ({
   requestForegroundPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
   geocodeAsync: jest.fn().mockResolvedValue([{ latitude: 12.97, longitude: 77.59 }]),
+  getCurrentPositionAsync: jest.fn().mockResolvedValue({ coords: { latitude: 13.34, longitude: 74.74 } }),
+  Accuracy: { Balanced: 3 },
+}));
+jest.mock('expo-haptics', () => ({
+  impactAsync: jest.fn().mockResolvedValue(undefined),
+  selectionAsync: jest.fn().mockResolvedValue(undefined),
+  performAndroidHapticsAsync: jest.fn().mockResolvedValue(undefined),
+  ImpactFeedbackStyle: { Light: 'light', Medium: 'medium', Heavy: 'heavy', Rigid: 'rigid', Soft: 'soft' },
+  AndroidHaptics: { Segment_Tick: 'segment-tick' },
 }));

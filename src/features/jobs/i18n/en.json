@@ -3,7 +3,8 @@
   "title": "Opportunities",
   "share": {
     "label": "Share",
-    "message": "Find jobs, build skills and keep learning on pathwise."
+    "message": "Find jobs, build skills and keep learning on pathwise.",
+    "messageWithLink": "Find jobs, build skills and keep learning on pathwise: {{url}}"
   },
   "sections": {
     "recommended": "Recommended",
@@ -23,20 +24,28 @@
       "unknown": "Search failed. Please try again."
     }
   },
+  "locate": {
+    "errors": {
+      "permissionDenied": "Allow location access to see where you are.",
+      "unknown": "Couldn't find your location. Please try again."
+    }
+  },
   "map": {
     "loading": "Loading jobs near you…",
     "loadError": "Couldn't load jobs on the map.",
     "companyPin": "{{name}}, open jobs: {{count}}",
-    "clusterPin": "{{count}} companies here. Tap to zoom in."
+    "clusterPin": "{{count}} companies here. Tap to zoom in.",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "myLocation": "Show my location"
   },
   "sheet": {
-    "openJobs": "Open jobs: {{count}}",
     "close": "Close",
     "loadError": "Couldn't load this company's jobs.",
-    "noJobs": "No open jobs right now."
+    "noJobs": "No open jobs right now.",
+    "cityOpenJobs": "{{city}} · Open jobs: {{count}}"
   },
   "job": {
-    "meta": "{{location}} · {{employmentType}}",
     "salaryLpa": "₹{{min}}–{{max}} LPA",
     "salaryNotDisclosed": "Salary not disclosed",
     "employmentType": {
@@ -44,6 +53,68 @@
       "partTime": "Part-time",
       "internship": "Internship",
       "contract": "Contract"
+    },
+    "workMode": {
+      "onSite": "On-site",
+      "remote": "Remote",
+      "hybrid": "Hybrid"
+    },
+    "experienceRange": "{{min}}–{{max}} yrs",
+    "experienceFrom": "{{min}}+ yrs",
+    "verified": "Verified company",
+    "moreSkills": "+{{count}}",
+    "postedJustNow": "Just now",
+    "postedHoursAgo": "{{count}}h ago",
+    "postedDaysAgo": "{{count}}d ago",
+    "distanceKm": "{{distance}} km away",
+    "listingMeta": "{{location}} · {{employmentType}} · {{workMode}}"
+  },
+  "list": {
+    "loadError": "Couldn't load jobs.",
+    "empty": "No jobs match right now.",
+    "loading": "Loading jobs"
+  },
+  "filters": {
+    "open": "Filters",
+    "activeCount": "Filters, {{count}} on",
+    "verified": "Verified",
+    "last24Hours": "Last 24 hours",
+    "age": {
+      "0-3": "0–3 days",
+      "3-7": "3–7 days",
+      "7-15": "7–15 days",
+      "15-30": "15–30 days",
+      "30+": "30+ days"
+    },
+    "title": "Filters",
+    "experience": "Your experience",
+    "fresher": "Fresher",
+    "years": "{{count}} yrs",
+    "skills": "Skills",
+    "companies": "Companies",
+    "clear": "Clear all",
+    "apply": "Show jobs",
+    "close": "Close filters"
+  },
+  "jobSearch": {
+    "placeholder": "Search jobs, skills, companies, places",
+    "clear": "Clear search"
+  },
+  "listHeader": {
+    "count": "{{count}} Jobs",
+    "sortLabel": "Sort: {{option}}",
+    "sortTitle": "Sort by",
+    "sortClose": "Close sort",
+    "sortOptions": {
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "salary": "Highest salary"
     }
+  },
+  "jobActions": {
+    "share": "Share {{title}}",
+    "save": "Save {{title}}",
+    "shareMessage": "{{title}} at {{company}} on pathwise: {{url}}",
+    "postedAt": "Posted {{when}}"
   }
 }

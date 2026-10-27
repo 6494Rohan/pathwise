@@ -15,4 +15,11 @@ describe('Header', () => {
 
     expect(screen.getByText('Share')).toBeOnTheScreen();
   });
+
+  it('shows an accessory next to the title', async () => {
+    await render(<Header title="Profile" titleAccessory={<Text>MCSQ9387</Text>} />);
+
+    expect(screen.getByRole('header', { name: 'Profile' })).toBeOnTheScreen();
+    expect(screen.getByText('MCSQ9387')).toBeOnTheScreen();
+  });
 });

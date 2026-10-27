@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LoginScreen, SignUpScreen, useSession, VerifyEmailScreen } from '@/features/auth';
+import { linking } from './linking';
 import TabNavigator from './TabNavigator';
 import { useNavigationTheme } from '@/theme';
 import type { RootStackParamList } from './types';
@@ -18,7 +19,7 @@ export default function AppNavigator() {
   if (isPending) return null;
 
   return (
-    <NavigationContainer theme={navigationTheme}>
+    <NavigationContainer theme={navigationTheme} linking={linking}>
       <Stack.Navigator screenOptions={screenOptions}>
         <Stack.Screen name="Main" component={TabNavigator} />
         {user ? null : (
