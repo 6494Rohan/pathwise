@@ -1,6 +1,7 @@
 import React, { createRef } from 'react';
-import { Text, TextInputInstance } from 'react-native';
+import { StyleSheet, Text, TextInputInstance } from 'react-native';
 import { fireEvent, render, screen } from '@testing-library/react-native';
+import { spacing, typography } from '@/theme';
 import Input from '../Input';
 
 describe('Input', () => {
@@ -39,5 +40,22 @@ describe('Input', () => {
     await render(<Input placeholder="Email" value="" onChangeText={jest.fn()} editable={false} />);
 
     expect(screen.getByPlaceholderText('Email')).toHaveProp('editable', false);
+  });
+
+  it('uses the body font without a line height, which makes Android text inputs jitter', async () => {
+    await render(<Input placeholder="Email" value="" onChangeText={jest.fn()} />);
+
+    const field = screen.getByPlaceholderText('Email');
+    expect(field).toHaveStyle({ fontFamily: 'Plus Jakarta Sans', textAlignVertical: 'center' });
+    expect(StyleSheet.flatten(field.props.style).lineHeight).toBeUndefined();
+  });
+
+  it('keeps the design line height as a minimum so password fields do not shrink while typing', async () => {
+    await render(<Input placeholder="Password" value="secret" onChangeText={jest.fn()} secureTextEntry />);
+
+    expect(screen.getByPlaceholderText('Password')).toHaveStyle({
+      minHeight: typography.body.lineHeight + spacing[12] * 2,
+      paddingVertical: spacing[12],
+    });
   });
 });

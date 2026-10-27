@@ -3,13 +3,30 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { getLocales } from 'expo-localization';
 import { authTranslations } from '@/features/auth/i18n';
-import { homeTranslations } from '@/features/home/i18n';
+import { jobsTranslations } from '@/features/jobs/i18n';
+import { learningTranslations } from '@/features/learning/i18n';
+import { profileTranslations } from '@/features/profile/i18n';
+import { skillsTranslations } from '@/features/skills/i18n';
 import en from './locales/en.json';
 import hi from './locales/hi.json';
 
 export const resources = {
-  en: { common: en, auth: authTranslations.en, home: homeTranslations.en },
-  hi: { common: hi satisfies typeof en, auth: authTranslations.hi, home: homeTranslations.hi },
+  en: {
+    common: en,
+    auth: authTranslations.en,
+    jobs: jobsTranslations.en,
+    skills: skillsTranslations.en,
+    learning: learningTranslations.en,
+    profile: profileTranslations.en,
+  },
+  hi: {
+    common: hi satisfies typeof en,
+    auth: authTranslations.hi,
+    jobs: jobsTranslations.hi,
+    skills: skillsTranslations.hi,
+    learning: learningTranslations.hi,
+    profile: profileTranslations.hi,
+  },
 };
 
 export type Language = keyof typeof resources;

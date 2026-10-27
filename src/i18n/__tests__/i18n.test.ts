@@ -15,7 +15,7 @@ describe('i18n', () => {
   it('translates global and feature keys', () => {
     expect(translateKey('common:validation.emailRequired')).toBe('Email is required');
     expect(i18n.t('common:errors.requestFailed', { status: 500 })).toBe('Request failed with status 500');
-    expect(i18n.t('home:environment')).toBe('Environment Variables:');
+    expect(i18n.t('jobs:title')).toBe('Opportunities');
   });
 
   it('saves the chosen language and restores it on the next start', async () => {

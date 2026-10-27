@@ -30,7 +30,7 @@ npx ampx sandbox --once     # deploy your Amplify sandbox backend and write ampl
 
 | Path | Responsibility |
 |---|---|
-| `src/components/` | Shared UI built on the theme, grouped by category: `button/` (`Button`), `typography/` (`AppText`), `input/` (`Input`), `common/` (`SafeAreaScreen`, `Header`). Import from the category folder: `import { Button } from '@/components/button'`. There is no global `src/components/index.ts`. |
+| `src/components/` | Shared UI built on the theme, grouped by category: `button/` (`Button`), `typography/` (`AppText`), `input/` (`Input`), `common/` (`SafeAreaScreen`, `Header`, `ComingSoon`). Import from the category folder: `import { Button } from '@/components/button'`. There is no global `src/components/index.ts`. |
 | `src/features/<feature>/` | One folder per feature, including its screens — see **Feature structure** below. |
 | `src/services/api.ts` | The shared axios client — the only place HTTP happens. Feature services validate its responses with Zod. |
 | `src/services/queryClient.ts` | The shared React Query client (defaults). |
@@ -40,7 +40,7 @@ npx ampx sandbox --once     # deploy your Amplify sandbox backend and write ampl
 | `src/theme/` | Design tokens: `colors.ts` (`lightColors` + `darkColors`), `spacing.ts`, `radius.ts`, `typography.ts`, and `useTheme()`. |
 | `src/utils/scaling.ts` | `scale`, `verticalScale`, `moderateScale`, `fontScale` (clamped to the phone size range, pixel-rounded). Used by the theme; see **Sizing and scaling** for direct use. |
 | `src/utils/validation.ts` | `validateForm(schema, values)` for form field errors. |
-| `src/navigation/` | React Navigation navigators (this project does **not** use Expo Router). |
+| `src/navigation/` | React Navigation navigators (this project does **not** use Expo Router). `TabNavigator` builds the bottom tabs from its `TABS` config (route, screen, i18n namespace, icon); each tab's label is `<namespace>:tabTitle` and its header title `<namespace>:title`. The tab bar is the custom `components/AppTabBar` and every tab gets the shared `Header` (with `headerRight` actions) through `screenOptions`. Tab screens use `<SafeAreaScreen edges={[]}>` because the header and tab bar already apply the insets. |
 | `src/services/amplify.ts`, `src/services/secureTokenStorage.ts` | App-wide Amplify setup and token storage — see the [auth spec](src/features/auth/spec/README.md). |
 | `amplify/` | Amplify Gen 2 backend, deployed per developer with `npx ampx sandbox --once`. Typecheck with `npx tsc -p amplify --noEmit`. Details in the [auth spec](src/features/auth/spec/setup.md). |
 | `plugins/` | Expo config plugins (`withAndroidImeInsets` keeps content above the Android keyboard). Native: changing one needs `npm run build`. |

@@ -6,6 +6,6 @@ describe('App', () => {
   it('restores the session and opens the app', async () => {
     await render(<App />);
 
-    expect(await screen.findByText('Environment Variables:')).toBeOnTheScreen();
+    expect(await screen.findByRole('header', { name: 'Opportunities' })).toBeOnTheScreen();
   });
 });

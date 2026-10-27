@@ -3,7 +3,7 @@
 ## Session
 
 - **Source of truth:** Amplify. Its tokens are kept in the device's secure storage (Android Keystore / iOS Keychain via `expo-secure-store`), not AsyncStorage; see [decisions.md](decisions.md#token-storage). The app mirrors "who is signed in" in React Query under `authKeys.session()` (`useSession`, `staleTime: Infinity`). There is no Zustand auth store.
-- **Startup:** `AppNavigator` renders nothing while `useSession` is pending, then shows `Login` / `SignUp` / `VerifyEmail` when the session is `null` and the `Main` tabs when it holds a `SessionUser`.
+- **Startup:** `AppNavigator` renders nothing while `useSession` is pending, then shows `Login` / `SignUp` / `VerifyEmail` when the session is `null` and the `Main` tabs (Jobs, Skills, Learning, Profile) when it holds a `SessionUser`.
 - **Signing in** never navigates to Home directly. Mutations update the session (`setQueryData` or `invalidateQueries`), and the navigator switches stacks.
 - **API token:** every request calls `getAccessToken()` → `fetchAuthSession()`, so Amplify refreshes expired tokens. Nothing caches the token.
 - **401 from the API:** `App.tsx` calls `clearSession(queryClient)`, which sets the session to `null` and removes every other cached query. Amplify's saved session is not cleared, so the next app start restores it.
@@ -40,7 +40,7 @@
 
 ## Sign out
 
-`SignOutButton` (on Home) → `useSignOut` → Amplify `signOut()` (local, no browser) and `GoogleSignin.signOut()` (so the next Google sign-in shows the picker) → `clearSession` → Login.
+`SignOutButton` (on the Profile tab) → `useSignOut` → Amplify `signOut()` (local, no browser) and `GoogleSignin.signOut()` (so the next Google sign-in shows the picker) → `clearSession` → Login.
 
 ## Errors
 

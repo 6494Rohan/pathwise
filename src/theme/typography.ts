@@ -6,7 +6,15 @@ export const FONT_FAMILY = 'Plus Jakarta Sans';
 
 type FontWeight = '400' | '500' | '600' | '700' | '800';
 
-const textStyle = (fontSize: number, lineHeight: number, fontWeight: FontWeight, letterSpacing = 0): TextStyle => ({
+interface DesignTextStyle {
+  fontFamily: string;
+  fontSize: number;
+  lineHeight: number;
+  fontWeight: FontWeight;
+  letterSpacing: number;
+}
+
+const textStyle = (fontSize: number, lineHeight: number, fontWeight: FontWeight, letterSpacing = 0): DesignTextStyle => ({
   fontFamily: FONT_FAMILY,
   fontSize: fontScale(fontSize),
   lineHeight: fontScale(lineHeight),

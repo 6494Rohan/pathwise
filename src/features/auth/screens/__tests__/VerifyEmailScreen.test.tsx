@@ -24,7 +24,7 @@ describe('VerifyEmailScreen', () => {
     await fireEvent.changeText(screen.getByPlaceholderText('6-digit code'), '123456');
     await fireEvent.press(screen.getByRole('button', { name: 'Verify' }));
 
-    expect(confirmSignUp).toHaveBeenCalledWith({ username: 'a@b.co', confirmationCode: '123456' });
+    await waitFor(() => expect(confirmSignUp).toHaveBeenCalledWith({ username: 'a@b.co', confirmationCode: '123456' }));
   });
 
   it('rejects a code that is not 6 digits', async () => {

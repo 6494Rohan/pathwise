@@ -33,6 +33,8 @@ export default function Input({ error, errorTestID, leftIcon, rightAccessory, re
   );
 }
 
+const FIELD_PADDING = spacing[12];
+
 const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     container: {
@@ -54,11 +56,19 @@ const createStyles = (colors: ThemeColors) =>
     fieldDisabled: {
       opacity: 0.6,
     },
+    // No lineHeight: on Android it makes a TextInput's text jitter while scrolling. minHeight keeps the design's
+    // line box instead, so the field doesn't shrink when a password field switches to dots.
     input: {
-      ...typography.body,
+      fontFamily: typography.body.fontFamily,
+      fontSize: typography.body.fontSize,
+      fontWeight: typography.body.fontWeight,
+      letterSpacing: typography.body.letterSpacing,
+      includeFontPadding: false,
+      textAlignVertical: 'center',
+      minHeight: typography.body.lineHeight + FIELD_PADDING * 2,
       flex: 1,
       color: colors.textPrimary,
-      paddingVertical: spacing[12],
+      paddingVertical: FIELD_PADDING,
     },
     errorText: {
       marginTop: spacing[4],
