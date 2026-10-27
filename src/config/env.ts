@@ -3,6 +3,7 @@ import { z } from 'zod';
 const envSchema = z.object({
   EXPO_PUBLIC_APP_VARIANT: z.enum(['develop', 'qa', 'preprod', 'prod']).default('develop'),
   EXPO_PUBLIC_API_URL: z.url().optional(),
+  EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: z.string().min(1).optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -11,6 +12,7 @@ export type Env = z.infer<typeof envSchema>;
 const parsed = envSchema.safeParse({
   EXPO_PUBLIC_APP_VARIANT: process.env.EXPO_PUBLIC_APP_VARIANT || undefined,
   EXPO_PUBLIC_API_URL: process.env.EXPO_PUBLIC_API_URL || undefined,
+  EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || undefined,
 });
 
 if (!parsed.success) {

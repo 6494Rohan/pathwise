@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaScreen } from '@/components/common';
 import { AppText } from '@/components/typography';
 import { env } from '@/config/env';
+import { SignOutButton } from '@/features/auth';
 import { spacing } from '@/theme';
 import EnvironmentCard from '../components/EnvironmentCard';
 
@@ -17,6 +18,7 @@ export default function HomeScreen() {
           {t('title')}
         </AppText>
         <EnvironmentCard appVariant={env.EXPO_PUBLIC_APP_VARIANT} apiUrl={env.EXPO_PUBLIC_API_URL} />
+        <SignOutButton style={styles.signOut} />
       </ScrollView>
     </SafeAreaScreen>
   );
@@ -28,5 +30,8 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: spacing[20],
+  },
+  signOut: {
+    marginTop: spacing[24],
   },
 });

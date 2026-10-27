@@ -1,13 +1,11 @@
 import * as user from '..';
 
 describe('user feature public API', () => {
-  it('exposes hooks, store and form schema', () => {
+  it('exposes query hooks, keys and form schema', () => {
     expect(Object.keys(user).sort()).toEqual([
       'UpdateProfileSchema',
-      'useAuth',
       'useUpdateProfile',
       'useUserProfile',
-      'useUserStore',
       'userKeys',
     ]);
   });

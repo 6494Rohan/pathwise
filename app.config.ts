@@ -49,6 +49,12 @@ const plusJakartaSansFonts = Object.entries(PLUS_JAKARTA_SANS_WEIGHTS).map(([wei
   path: `./node_modules/@expo-google-fonts/plus-jakarta-sans/${face}/PlusJakartaSans_${face}.ttf`,
 }));
 
+// The Google Sign-In plugin only configures iOS and requires the iOS client's reversed ID, so add it once that exists.
+function googleSignInPlugin() {
+  const iosUrlScheme = process.env.GOOGLE_IOS_URL_SCHEME;
+  return iosUrlScheme ? [["@react-native-google-signin/google-signin", { iosUrlScheme }]] : [];
+}
+
 function getAdaptiveIcon() {
   return getIconPath("adaptive-icon");
 }
@@ -106,6 +112,9 @@ export default {
       },
     ],
     "expo-localization",
+    "./plugins/withAndroidImeInsets",
+    ["expo-secure-store", { faceIDPermission: false }],
+    ...googleSignInPlugin(),
     "expo-status-bar",
     [
       "expo-notifications",

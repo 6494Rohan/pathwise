@@ -3,9 +3,9 @@ import { render, screen } from '@testing-library/react-native';
 import App from '../App';
 
 describe('App', () => {
-  it('renders the app with all providers', async () => {
+  it('restores the session and opens the app', async () => {
     await render(<App />);
 
-    expect(screen.toJSON()).not.toBeNull();
+    expect(await screen.findByText('Environment Variables:')).toBeOnTheScreen();
   });
 });

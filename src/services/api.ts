@@ -14,7 +14,7 @@ export class ApiError extends Error {
 }
 
 interface ApiAuthOptions {
-  getAuthToken?: () => string | null | undefined;
+  getAuthToken?: () => Promise<string | null> | string | null | undefined;
   onUnauthorized?: () => void;
 }
 
@@ -34,9 +34,9 @@ export const http = axios.create({
   },
 });
 
-http.interceptors.request.use((config) => {
+http.interceptors.request.use(async (config) => {
   config.headers['Accept-Language'] = i18n.language;
-  const token = authOptions.getAuthToken?.();
+  const token = await authOptions.getAuthToken?.();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

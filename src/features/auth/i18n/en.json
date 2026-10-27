@@ -1,0 +1,54 @@
+{
+  "continueWithGoogle": "Continue with Google",
+  "continueWithApple": "Continue with Apple",
+  "or": "Or",
+  "signOut": "Sign out",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
+  "fields": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "code": "6-digit code"
+  },
+  "login": {
+    "title": "Welcome",
+    "subtitle": "Log in to continue",
+    "continue": "Continue",
+    "submit": "Log in",
+    "noAccount": "New to pathwise?",
+    "signUp": "Sign up",
+    "emailVerified": "Email verified. Log in to continue."
+  },
+  "signUp": {
+    "titleStart": "Create",
+    "titleEnd": "your account",
+    "passwordHint": "At least 8 characters, with upper and lower case letters, a number and a symbol.",
+    "submit": "Sign up",
+    "haveAccount": "Already have an account?",
+    "logIn": "Log in"
+  },
+  "verify": {
+    "title": "Verify your email",
+    "subtitle": "Enter the 6-digit code we sent to {{email}}.",
+    "submit": "Verify",
+    "noCode": "Didn't get a code?",
+    "resend": "Resend",
+    "codeSent": "We sent you a new code."
+  },
+  "validation": {
+    "passwordWeak": "Use upper and lower case letters, a number and a symbol",
+    "passwordsDontMatch": "Passwords don't match",
+    "codeInvalid": "Enter the 6-digit code"
+  },
+  "errors": {
+    "wrongCredentials": "Incorrect email or password.",
+    "emailTaken": "An account with this email already exists. Log in instead.",
+    "weakPassword": "This password doesn't meet the requirements.",
+    "invalidCode": "That code is incorrect. Check your email and try again.",
+    "codeExpired": "That code has expired. Tap Resend to get a new one.",
+    "tooManyAttempts": "Too many attempts. Please wait a moment and try again.",
+    "unknown": "Something went wrong. Please try again."
+  }
+}

@@ -34,6 +34,15 @@ describe('api', () => {
     expect(requests[0].timeout).toBe(15000);
   });
 
+  it('waits for an async token', async () => {
+    configureApi({ getAuthToken: async () => 'fresh' });
+    respondWith({ status: 200, data: {} });
+
+    await api.get('/me');
+
+    expect(requests[0].headers.Authorization).toBe('Bearer fresh');
+  });
+
   it('sends the request body for writes', async () => {
     respondWith({ status: 200, data: { ok: true } });
 

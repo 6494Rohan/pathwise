@@ -23,6 +23,7 @@ npm test                    # component and unit tests
 npx expo-doctor             # diagnose dependency and config issues
 npm run build               # prebuild + run on Android (npm run build:ios for iOS)
 npm run build:apk           # release APK for arm64 phones (android/app/build/outputs/apk/release/)
+npx ampx sandbox --once     # deploy your Amplify sandbox backend and write amplify_outputs.json (needed after cloning)
 ```
 
 ## Project structure
@@ -39,7 +40,10 @@ npm run build:apk           # release APK for arm64 phones (android/app/build/ou
 | `src/theme/` | Design tokens: `colors.ts` (`lightColors` + `darkColors`), `spacing.ts`, `radius.ts`, `typography.ts`, and `useTheme()`. |
 | `src/utils/scaling.ts` | `scale`, `verticalScale`, `moderateScale`, `fontScale` (clamped to the phone size range, pixel-rounded). Used by the theme; see **Sizing and scaling** for direct use. |
 | `src/utils/validation.ts` | `validateForm(schema, values)` for form field errors. |
-| `src/navigation/` | React Navigation navigators (this project does **not** use Expo Router). |
+| `src/navigation/` | React Navigation navigators (this project does **not** use Expo Router). `AppNavigator` shows the auth screens or the main tabs from `useSession`. |
+| `src/services/amplify.ts` | `configureAmplify()` and `getAccessToken()` — the app-wide Amplify setup. See **Authentication**. |
+| `amplify/` | Amplify Gen 2 backend (Cognito auth + its Lambda triggers), deployed per developer with `npx ampx sandbox`. Writes the git-ignored `amplify_outputs.json`. Typecheck with `npx tsc -p amplify --noEmit`. |
+| `plugins/` | Expo config plugins (`withAndroidImeInsets` keeps content above the Android keyboard). Native: changing one needs `npm run build`. |
 
 ### Feature structure
 
@@ -56,6 +60,7 @@ src/features/<feature>/
 ├── services/      .ts   HTTP calls through the ACL (userService.ts) — return frontend models; only queries call these
 ├── store/         .ts   Zustand client state (userStore.ts) — only if the feature needs shared client state
 ├── types/         .ts   frontend models + form schemas only, our naming (user.types.ts)
+├── spec/          .md   the feature's spec: setup, flows, decisions, status — see Feature specs
 └── index.ts             public API: screens, query hooks, store hook, models/form schemas — never services or acl
 ```
 
@@ -64,6 +69,14 @@ src/features/<feature>/
 - **Imports:** use the `@/` alias (= `src/`) for anything outside the current feature or folder — `import { Button } from '@/components/button'`. Use relative paths only inside the same feature or folder (`'../types/login.types'`). Never write `'../../../'`.
 - **Hooks:** a hook used by one feature goes in that feature's `hooks/` (`features/login/hooks/useLoginForm.ts`). Only hooks that are app-wide or used by 2+ features go in global `src/hooks/` (`useRefetchOnAppFocus.ts`). React Query hooks stay in the feature's `queries/` and store hooks in its `store/`.
 - **Shared code** used by 2+ features goes in `src/components/`, `src/hooks/` or `src/utils/`; move it there when the second feature needs it.
+
+### Feature specs
+
+A feature that has external setup, non-obvious flows or hard-won decisions keeps a `spec/` folder of Markdown files (start with `spec/README.md`). It is the memory of the feature: why the code is the way it is, how to set it up, and what is not built yet.
+
+- **Read the feature's `spec/` before changing the feature.** Existing specs: [`src/features/auth/spec/`](src/features/auth/spec/README.md).
+- **Update it in the same change** when behaviour, setup, a decision or the status changes. A stale spec is worse than none.
+- Write for a developer or agent new to the feature: facts, file paths and the *why*, not narration. Never put secrets, keys or account-specific IDs in a spec.
 
 ### Strings and translations (mandatory)
 
@@ -80,7 +93,7 @@ No hard-coded user-facing text. Global strings live in `src/i18n/locales/<lang>.
 Jest with the `jest-expo` preset and React Native Testing Library (`@testing-library/react-native`). Config: `jest.config.js`, `jest.setup.ts` (initialises i18n and mocks native modules).
 
 - **Location:** tests live in a `__tests__/` folder inside the folder whose code they test — `components/button/__tests__/Button.test.tsx`, `features/login/hooks/__tests__/useLoginForm.test.ts`. Tests for root-level files (e.g. `App.tsx`) go in the `__tests__/` folder next to them.
-- **Every folder that contains code has a `__tests__/` folder** covering all the code in it — components, screens, hooks, queries, services, stores, ACL mappers, schemas, config and utils. A feature root's `__tests__/index.test.ts` checks its public API (and that `services/` and `acl/` stay private); a feature `i18n/` test checks every language has all English keys. Only type-only folders (no runtime code) and `test-utils/` have no tests.
+- **Every folder that contains code has a `__tests__/` folder** covering all the code in it — components, screens, hooks, queries, services, stores, ACL mappers, schemas, config and utils. A feature root's `__tests__/index.test.ts` checks its public API (and that `services/` and `acl/` stay private); a feature `i18n/` test checks every language has all English keys. Only type-only folders (no runtime code), `spec/` folders and `test-utils/` have no tests.
 - **How:** `render` and events are async — `await render(<Button … />)`, `await fireEvent.press(…)`. Query like a user (`getByRole`, `getByText`, `getByPlaceholderText`); use `testID` only when there is no visible text. Assert with the built-in matchers (`toBeOnTheScreen`, `toHaveTextContent`).
 - Components that need React Query: `renderWithProviders` from `@/test-utils/renderWithProviders`.
 - Text in tests is the real English translation (i18n is initialised in `jest.setup.ts`).
@@ -100,6 +113,17 @@ SEND: form values / frontend model → acl: mapper → request DTO (backend name
 - Services always go through the mappers: `return toUserProfile(await api.get(url))` and `api.put(url, toUpdateProfileRequest(input))`. Never return a raw response or send a model/form object directly.
 - `types/` holds only frontend models and form schemas. A model never mirrors backend naming; if the backend renames a field, only the mapper changes.
 - `acl/` is private: never export it from the feature's `index.ts`, and never import a DTO outside `acl/` and `services/`.
+
+## Authentication
+
+Sign-in is the `auth` feature on AWS Cognito via Amplify Gen 2: Google through the native account picker (Cognito custom-auth Lambdas verify the Google ID token) and email + password (Apple shown disabled). Full detail: [`src/features/auth/spec/`](src/features/auth/spec/README.md).
+
+- **Who is signed in:** `useSession()` from `@/features/auth` (React Query, `authKeys.session()`). There is no auth store; don't add one or copy the user/token into state.
+- **Signing out:** `useSignOut()` or `SignOutButton`. To drop the session from outside React (e.g. the API 401 handler) use `clearSession(queryClient)`. **Never call `queryClient.clear()`** — it detaches the session query the navigator watches, and the screen won't change.
+- **Tokens:** Amplify keeps them in encrypted secure storage (`src/services/secureTokenStorage.ts` on `expo-secure-store`), never AsyncStorage. The API client gets a fresh token per request through `getAccessToken()`; never copy tokens into state, AsyncStorage or logs.
+- **Amplify boundary:** only `features/auth/services/authService.ts` imports `aws-amplify/auth` and `@react-native-google-signin/google-signin` (plus `src/services/amplify.ts` for setup, token storage and tokens). Cognito errors leave the service as `AuthFailure` with an `AuthErrorCode`.
+- **After cloning:** set up AWS credentials and run `npx ampx sandbox --once`; the app doesn't typecheck or build without `amplify_outputs.json`. Tests don't need it (Jest maps it to `src/test-utils/amplifyOutputs.json` and `jest.setup.ts` mocks Amplify).
+- **Google per build variant:** each package name + signing SHA-1 needs an Android OAuth client in Google Cloud, and `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` must equal the backend's `GOOGLE_CLIENT_ID` secret. The Lambda token check in `amplify/auth/google/` is security-critical: change it only with its tests.
 
 ## Conventions
 
@@ -122,7 +146,8 @@ The app follows the phone's light/dark setting. All visual values come from `src
 | Spacing (padding, margin, gap) | `spacing[n]`, keyed by the Figma `space/n` token — `2`, `4`, `6`, `8`, `12`, `16`, `20`, `24`, `32` (already scaled). Use the nearest step. |
 | Corner radius | `radius` — `sm` 8, `md` 12, `lg` 16, `xl` 24 (already scaled), `full` 999 for pills. Larger containers get larger corners. |
 | Screen root | Wrap every screen in `<SafeAreaScreen>` from `src/components/common` — it adds safe-area padding and the app background. Default edges are top and bottom; pass `edges={['top']}` etc. to change them. Never use `SafeAreaView` or a full-screen `View` with `flex: 1` and a background directly. |
-| Buttons, inputs | `Button` (`variant`: `primary` / `secondary`, `loading`) and `Input` (`error`) from `src/components/button` and `src/components/input`. Don't use React Native's `Button` or style `TextInput` per screen. |
+| Buttons, inputs | `Button` (`variant`: `primary` / `secondary`, `loading`) and `Input` (`error`, `leftIcon`, `rightAccessory`, `ref` forwarded to the `TextInput`) from `src/components/button` and `src/components/input`. Don't use React Native's `Button` or style `TextInput` per screen. In forms, chain fields with `returnKeyType="next"`, `submitBehavior="submit"` and `onSubmitEditing` → next field's `ref.focus()`. |
+| Icons | `Ionicons` imported from `@expo/vector-icons/Ionicons` (never the package root — Metro has no tree shaking), sized with `moderateScale(n)`, coloured with `colors.icon*`. |
 | Element sizes, icons, touch targets | See **Sizing and scaling** below. |
 
 Styles that use colors are created from the current theme; styles without colors stay a plain static `StyleSheet`:

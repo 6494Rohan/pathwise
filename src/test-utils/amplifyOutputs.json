@@ -1,0 +1,9 @@
+{
+  "auth": {
+    "user_pool_id": "ap-south-1_test",
+    "aws_region": "ap-south-1",
+    "user_pool_client_id": "test-client",
+    "username_attributes": ["email"]
+  },
+  "version": "1.4"
+}

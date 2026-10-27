@@ -6,6 +6,9 @@ export type TabParamList = {
 };
 
 export type RootStackParamList = {
+  Login: { verifiedEmail?: string } | undefined;
+  SignUp: undefined;
+  VerifyEmail: { email: string };
   Main: NavigatorScreenParams<TabParamList>;
 };
 
