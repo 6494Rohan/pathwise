@@ -40,9 +40,9 @@ npx ampx sandbox --once     # deploy your Amplify sandbox backend and write ampl
 | `src/theme/` | Design tokens: `colors.ts` (`lightColors` + `darkColors`), `spacing.ts`, `radius.ts`, `typography.ts`, and `useTheme()`. |
 | `src/utils/scaling.ts` | `scale`, `verticalScale`, `moderateScale`, `fontScale` (clamped to the phone size range, pixel-rounded). Used by the theme; see **Sizing and scaling** for direct use. |
 | `src/utils/validation.ts` | `validateForm(schema, values)` for form field errors. |
-| `src/navigation/` | React Navigation navigators (this project does **not** use Expo Router). `AppNavigator` shows the auth screens or the main tabs from `useSession`. |
-| `src/services/amplify.ts` | `configureAmplify()` and `getAccessToken()` — the app-wide Amplify setup. See **Authentication**. |
-| `amplify/` | Amplify Gen 2 backend (Cognito auth + its Lambda triggers), deployed per developer with `npx ampx sandbox`. Writes the git-ignored `amplify_outputs.json`. Typecheck with `npx tsc -p amplify --noEmit`. |
+| `src/navigation/` | React Navigation navigators (this project does **not** use Expo Router). |
+| `src/services/amplify.ts`, `src/services/secureTokenStorage.ts` | App-wide Amplify setup and token storage — see the [auth spec](src/features/auth/spec/README.md). |
+| `amplify/` | Amplify Gen 2 backend, deployed per developer with `npx ampx sandbox --once`. Typecheck with `npx tsc -p amplify --noEmit`. Details in the [auth spec](src/features/auth/spec/setup.md). |
 | `plugins/` | Expo config plugins (`withAndroidImeInsets` keeps content above the Android keyboard). Native: changing one needs `npm run build`. |
 
 ### Feature structure
@@ -72,10 +72,14 @@ src/features/<feature>/
 
 ### Feature specs
 
-A feature that has external setup, non-obvious flows or hard-won decisions keeps a `spec/` folder of Markdown files (start with `spec/README.md`). It is the memory of the feature: why the code is the way it is, how to set it up, and what is not built yet.
+Feature-specific context lives with the feature, not in this file. A feature that has external setup, non-obvious flows or hard-won decisions keeps a `spec/` folder of Markdown files (start with `spec/README.md`): why the code is the way it is, how to set it up, and what is not built yet.
 
-- **Read the feature's `spec/` before changing the feature.** Existing specs: [`src/features/auth/spec/`](src/features/auth/spec/README.md).
-- **Update it in the same change** when behaviour, setup, a decision or the status changes. A stale spec is worse than none.
+| Spec | Read it before changing |
+|---|---|
+| [`src/features/auth/spec/`](src/features/auth/spec/README.md) | `src/features/auth/`, `src/services/amplify.ts`, `src/services/secureTokenStorage.ts`, `amplify/`, `plugins/withAndroidImeInsets.js`, or anything about sign-in, the session or tokens |
+
+- **Read the relevant `spec/` before changing that code.** Add a row here when a new feature gets a spec.
+- **Update the spec in the same change** when behaviour, setup, a decision or the status changes. A stale spec is worse than none.
 - Write for a developer or agent new to the feature: facts, file paths and the *why*, not narration. Never put secrets, keys or account-specific IDs in a spec.
 
 ### Strings and translations (mandatory)
@@ -113,17 +117,6 @@ SEND: form values / frontend model → acl: mapper → request DTO (backend name
 - Services always go through the mappers: `return toUserProfile(await api.get(url))` and `api.put(url, toUpdateProfileRequest(input))`. Never return a raw response or send a model/form object directly.
 - `types/` holds only frontend models and form schemas. A model never mirrors backend naming; if the backend renames a field, only the mapper changes.
 - `acl/` is private: never export it from the feature's `index.ts`, and never import a DTO outside `acl/` and `services/`.
-
-## Authentication
-
-Sign-in is the `auth` feature on AWS Cognito via Amplify Gen 2: Google through the native account picker (Cognito custom-auth Lambdas verify the Google ID token) and email + password (Apple shown disabled). Full detail: [`src/features/auth/spec/`](src/features/auth/spec/README.md).
-
-- **Who is signed in:** `useSession()` from `@/features/auth` (React Query, `authKeys.session()`). There is no auth store; don't add one or copy the user/token into state.
-- **Signing out:** `useSignOut()` or `SignOutButton`. To drop the session from outside React (e.g. the API 401 handler) use `clearSession(queryClient)`. **Never call `queryClient.clear()`** — it detaches the session query the navigator watches, and the screen won't change.
-- **Tokens:** Amplify keeps them in encrypted secure storage (`src/services/secureTokenStorage.ts` on `expo-secure-store`), never AsyncStorage. The API client gets a fresh token per request through `getAccessToken()`; never copy tokens into state, AsyncStorage or logs.
-- **Amplify boundary:** only `features/auth/services/authService.ts` imports `aws-amplify/auth` and `@react-native-google-signin/google-signin` (plus `src/services/amplify.ts` for setup, token storage and tokens). Cognito errors leave the service as `AuthFailure` with an `AuthErrorCode`.
-- **After cloning:** set up AWS credentials and run `npx ampx sandbox --once`; the app doesn't typecheck or build without `amplify_outputs.json`. Tests don't need it (Jest maps it to `src/test-utils/amplifyOutputs.json` and `jest.setup.ts` mocks Amplify).
-- **Google per build variant:** each package name + signing SHA-1 needs an Android OAuth client in Google Cloud, and `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` must equal the backend's `GOOGLE_CLIENT_ID` secret. The Lambda token check in `amplify/auth/google/` is security-critical: change it only with its tests.
 
 ## Conventions
 

@@ -2,7 +2,7 @@
 
 Sign-in for pathwise: Google (native account picker) and email + password, on AWS Cognito through Amplify Gen 2. Apple is shown but disabled.
 
-Read this folder before changing anything in `src/features/auth/`, `src/services/amplify.ts`, `amplify/` or `plugins/withAndroidImeInsets.js`. Update it in the same change when behaviour, setup or a decision changes.
+Read this folder before changing anything in `src/features/auth/`, `src/services/amplify.ts`, `src/services/secureTokenStorage.ts`, `amplify/` or `plugins/withAndroidImeInsets.js`. Update it in the same change when behaviour, setup or a decision changes.
 
 | File | What it covers |
 |---|---|
