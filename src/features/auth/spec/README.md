@@ -26,9 +26,9 @@ Read this folder before changing anything in `src/features/auth/`, `src/services
 | `queries/` | `useSession` (who is signed in) and one mutation hook per action; `clearSession` |
 | `hooks/` | `useLoginForm`, `useSignUpForm` (useReducer forms), `useKeyboardReveal` |
 | `screens/` | `LoginScreen`, `SignUpScreen`, `VerifyEmailScreen` |
-| `components/` | `AuthLayout`, `SocialSignInButtons`, `SocialButton`, `GoogleIcon`, `OrDivider`, `PasswordInput`, `AuthErrorText`, `AuthFooterLink`, `KeyboardRevealTarget`, `SignOutButton` |
+| `components/` | `AuthLayout`, `SocialSignInButtons`, `SocialButton`, `GoogleIcon`, `OrDivider`, `PasswordInput`, `AuthErrorText`, `AuthFooterLink`, `KeyboardRevealTarget`, `SignOutButton`, `SignUpHeaderButton` |
 | `plugins/withAndroidImeInsets.js` | Config plugin that keeps content above the Android keyboard under edge-to-edge |
 
 ## Public API (`index.ts`)
 
-`LoginScreen`, `SignUpScreen`, `VerifyEmailScreen`, `SignOutButton`, `authKeys`, `useSession`, `useSignOut`, `clearSession`, type `SessionUser`. Services and the ACL stay private (checked by `__tests__/index.test.ts`).
+`LoginScreen`, `SignUpScreen`, `VerifyEmailScreen`, `SignOutButton`, `SignUpHeaderButton`, `authKeys`, `useSession`, `useSignOut`, `clearSession`, type `SessionUser`. Services and the ACL stay private (checked by `__tests__/index.test.ts`).

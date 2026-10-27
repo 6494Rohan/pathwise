@@ -35,3 +35,21 @@ jest.mock('@react-native-google-signin/google-signin', () => ({
   },
   isSuccessResponse: (response: { type: string }) => response.type === 'success',
 }));
+// The native map can't render in Jest: MapView becomes a View and each Marker a pressable button.
+jest.mock('react-native-maps', () => {
+  const React: typeof import('react') = require('react');
+  const { Pressable, View } = require('react-native');
+  const animateToRegion = jest.fn();
+  function MapView({ ref, ...props }: { ref?: React.Ref<unknown> }) {
+    React.useImperativeHandle(ref, () => ({ animateToRegion }));
+    return React.createElement(View, props);
+  }
+  function Marker({ accessibilityLabel, onPress, children }: { accessibilityLabel?: string; onPress?: () => void; children?: React.ReactNode }) {
+    return React.createElement(Pressable, { accessibilityRole: 'button', accessibilityLabel, onPress }, children);
+  }
+  return { __esModule: true, default: MapView, Marker, mockAnimateToRegion: animateToRegion };
+});
+jest.mock('expo-location', () => ({
+  requestForegroundPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
+  geocodeAsync: jest.fn().mockResolvedValue([{ latitude: 12.97, longitude: 77.59 }]),
+}));

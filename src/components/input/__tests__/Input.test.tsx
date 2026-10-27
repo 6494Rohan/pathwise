@@ -1,7 +1,7 @@
 import React, { createRef } from 'react';
 import { StyleSheet, Text, TextInputInstance } from 'react-native';
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { spacing, typography } from '@/theme';
+import { lightColors, radius, spacing, typography } from '@/theme';
 import Input from '../Input';
 
 describe('Input', () => {
@@ -57,5 +57,16 @@ describe('Input', () => {
       minHeight: typography.body.lineHeight + spacing[12] * 2,
       paddingVertical: spacing[12],
     });
+  });
+
+  it('has a floating variant for fields over content such as a map', async () => {
+    await render(
+      <Input placeholder="Search" value="" onChangeText={jest.fn()} variant="floating" containerStyle={{ flex: 1 }} />
+    );
+
+    const field = StyleSheet.flatten(screen.getByPlaceholderText('Search').parent?.props.style);
+    expect(field).toEqual(
+      expect.objectContaining({ backgroundColor: lightColors.bgCanvas, borderRadius: radius.full })
+    );
   });
 });

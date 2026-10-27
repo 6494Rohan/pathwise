@@ -1,4 +1,49 @@
 {
   "tabTitle": "Jobs",
-  "title": "Opportunities"
+  "title": "Opportunities",
+  "share": {
+    "label": "Share",
+    "message": "Find jobs, build skills and keep learning on pathwise."
+  },
+  "sections": {
+    "recommended": "Recommended",
+    "allJobs": "All Jobs",
+    "saved": "Saved",
+    "applied": "Applied"
+  },
+  "viewMode": {
+    "map": "Map view",
+    "list": "List view"
+  },
+  "search": {
+    "placeholder": "Search location",
+    "clear": "Clear search",
+    "errors": {
+      "permissionDenied": "Allow location access to search places.",
+      "unknown": "Search failed. Please try again."
+    }
+  },
+  "map": {
+    "loading": "Loading jobs near you…",
+    "loadError": "Couldn't load jobs on the map.",
+    "companyPin": "{{name}}, open jobs: {{count}}",
+    "clusterPin": "{{count}} companies here. Tap to zoom in."
+  },
+  "sheet": {
+    "openJobs": "Open jobs: {{count}}",
+    "close": "Close",
+    "loadError": "Couldn't load this company's jobs.",
+    "noJobs": "No open jobs right now."
+  },
+  "job": {
+    "meta": "{{location}} · {{employmentType}}",
+    "salaryLpa": "₹{{min}}–{{max}} LPA",
+    "salaryNotDisclosed": "Salary not disclosed",
+    "employmentType": {
+      "fullTime": "Full-time",
+      "partTime": "Part-time",
+      "internship": "Internship",
+      "contract": "Contract"
+    }
+  }
 }

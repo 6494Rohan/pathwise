@@ -4,6 +4,7 @@ dotenv.config();
 
 const PERMISSIONS = {
   notifications: "We use notifications to keep you updated about important alerts.",
+  location: "We use your location to search places on the jobs map and show jobs near you.",
 };
 
 function getBundleIdentifier() {
@@ -114,6 +115,8 @@ export default {
     "expo-localization",
     "./plugins/withAndroidImeInsets",
     ["expo-secure-store", { faceIDPermission: false }],
+    ["expo-location", { locationWhenInUsePermission: PERMISSIONS.location }],
+    ["react-native-maps", { androidGoogleMapsApiKey: process.env.GOOGLE_MAPS_ANDROID_API_KEY }],
     ...googleSignInPlugin(),
     "expo-status-bar",
     [

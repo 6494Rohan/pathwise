@@ -1,12 +1,16 @@
 const { withMainActivity } = require('expo/config-plugins');
 
-const MARKER = 'setupImeInsets';
+const MARKER = 'emitImeWillChange';
+const OLD_MARKER = 'setupImeInsets';
+const IME_WILL_CHANGE_EVENT = 'imeWillChange';
 
 const IMPORTS = `import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import com.facebook.react.ReactApplication
+import com.facebook.react.bridge.Arguments
 `;
 
 const ON_CREATE_CALL = `
@@ -15,6 +19,12 @@ const ON_CREATE_CALL = `
     }`;
 
 const MEMBERS = `  private var isImeAnimating = false
+
+  // React Native reports keyboard changes only after the animation; JS listens for this to react as it starts.
+  private fun emitImeWillChange(visible: Boolean) {
+    val payload = Arguments.createMap().apply { putBoolean("visible", visible) }
+    (application as ReactApplication).reactHost?.currentReactContext?.emitDeviceEvent("${IME_WILL_CHANGE_EVENT}", payload)
+  }
 
   // Edge-to-edge (targetSdk 36) stops adjustResize from shrinking the window, so pad the root by the keyboard height.
   private fun imeBottomOf(insets: WindowInsetsCompat): Int =
@@ -41,6 +51,8 @@ const MEMBERS = `  private var isImeAnimating = false
         override fun onPrepare(animation: WindowInsetsAnimationCompat) {
           if (animation.typeMask and WindowInsetsCompat.Type.ime() != 0) {
             isImeAnimating = true
+            val wasVisible = ViewCompat.getRootWindowInsets(rootView)?.isVisible(WindowInsetsCompat.Type.ime()) == true
+            emitImeWillChange(!wasVisible)
           }
         }
 
@@ -80,6 +92,9 @@ const insertBefore = (source, anchor, addition) => {
 
 const addImeInsets = (source) => {
   if (source.includes(MARKER)) return source;
+  if (source.includes(OLD_MARKER)) {
+    throw new Error('withAndroidImeInsets: MainActivity has an older version of this plugin; run `npx expo prebuild --clean`');
+  }
 
   let result = insertAfter(source, 'import android.os.Bundle\n', IMPORTS);
   result = insertAfter(result, '    super.onCreate(null)', ON_CREATE_CALL);
@@ -97,3 +112,4 @@ const withAndroidImeInsets = (config) =>
 
 module.exports = withAndroidImeInsets;
 module.exports.addImeInsets = addImeInsets;
+module.exports.IME_WILL_CHANGE_EVENT = IME_WILL_CHANGE_EVENT;

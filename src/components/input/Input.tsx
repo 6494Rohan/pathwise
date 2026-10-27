@@ -1,7 +1,9 @@
 import React, { ReactNode, Ref } from 'react';
-import { StyleSheet, TextInput, TextInputInstance, TextInputProps, View } from 'react-native';
+import { StyleProp, StyleSheet, TextInput, TextInputInstance, TextInputProps, View, ViewStyle } from 'react-native';
 import { radius, spacing, ThemeColors, typography, useTheme } from '@/theme';
 import { AppText } from '../typography';
+
+type InputVariant = 'filled' | 'floating';
 
 interface InputProps extends Omit<TextInputProps, 'style'> {
   value: string;
@@ -11,15 +13,26 @@ interface InputProps extends Omit<TextInputProps, 'style'> {
   leftIcon?: ReactNode;
   rightAccessory?: ReactNode;
   ref?: Ref<TextInputInstance>;
+  variant?: InputVariant;
+  containerStyle?: StyleProp<ViewStyle>;
 }
 
-export default function Input({ error, errorTestID, leftIcon, rightAccessory, ref, ...inputProps }: InputProps) {
+export default function Input({
+  error,
+  errorTestID,
+  leftIcon,
+  rightAccessory,
+  ref,
+  variant = 'filled',
+  containerStyle,
+  ...inputProps
+}: InputProps) {
   const { colors } = useTheme();
   const styles = createStyles(colors);
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.field, error ? styles.fieldError : undefined, inputProps.editable === false && styles.fieldDisabled]}>
+    <View style={[styles.container, containerStyle]}>
+      <View style={[styles.field, styles[variant], error ? styles.fieldError : undefined, inputProps.editable === false && styles.fieldDisabled]}>
         {leftIcon}
         <TextInput ref={ref} style={styles.input} placeholderTextColor={colors.textTertiary} {...inputProps} />
         {rightAccessory}
@@ -44,11 +57,18 @@ const createStyles = (colors: ThemeColors) =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing[12],
-      backgroundColor: colors.bgMuted,
       borderWidth: 1,
+      paddingHorizontal: spacing[16],
+    },
+    filled: {
+      backgroundColor: colors.bgMuted,
       borderColor: colors.bgMuted,
       borderRadius: radius.md,
-      paddingHorizontal: spacing[16],
+    },
+    floating: {
+      backgroundColor: colors.bgCanvas,
+      borderColor: colors.borderDefault,
+      borderRadius: radius.full,
     },
     fieldError: {
       borderColor: colors.statusDanger,

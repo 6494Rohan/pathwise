@@ -7,26 +7,34 @@ import AppNavigator from '../AppNavigator';
 const signedOut = Object.assign(new Error('signed out'), { name: 'UserUnAuthenticatedException' });
 
 describe('AppNavigator', () => {
-  it('opens on the Jobs tab when signed in', async () => {
+  it('opens on the Jobs tab when signed in, with Upload Resume instead of Sign up', async () => {
     await renderWithProviders(<AppNavigator />);
 
     expect(await screen.findByRole('header', { name: 'Opportunities' })).toBeOnTheScreen();
+    expect(await screen.findByRole('button', { name: 'Upload Resume' })).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: 'Sign up' })).not.toBeOnTheScreen();
   });
 
-  it('shows the login screen when signed out', async () => {
+  it('lets a guest browse the tabs and open sign up from the header', async () => {
     jest.mocked(getCurrentUser).mockRejectedValueOnce(signedOut);
     await renderWithProviders(<AppNavigator />);
 
+    expect(await screen.findByRole('header', { name: 'Opportunities' })).toBeOnTheScreen();
+    await fireEvent.press(await screen.findByRole('button', { name: 'Sign up' }));
+
     expect(await screen.findByRole('button', { name: 'Continue with Google' })).toBeOnTheScreen();
+    expect(screen.getByPlaceholderText('Confirm password')).toBeOnTheScreen();
   });
 
-  it('returns to the login screen after signing out', async () => {
+  it('stays on the tabs as a guest after signing out', async () => {
     await renderWithProviders(<AppNavigator />);
     await fireEvent.press(await screen.findByRole('tab', { name: 'Profile' }));
 
     jest.mocked(getCurrentUser).mockRejectedValueOnce(signedOut);
     await fireEvent.press(screen.getByRole('button', { name: 'Sign out' }));
 
-    expect(await screen.findByRole('button', { name: 'Continue with Google' })).toBeOnTheScreen();
+    expect(await screen.findByRole('button', { name: 'Sign up' })).toBeOnTheScreen();
+    expect(screen.getByRole('header', { name: 'Profile' })).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: 'Sign out' })).not.toBeOnTheScreen();
   });
 });

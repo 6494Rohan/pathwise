@@ -1,4 +1,5 @@
-import { addImeInsets } from '../withAndroidImeInsets';
+import { addImeInsets, IME_WILL_CHANGE_EVENT } from '../withAndroidImeInsets';
+import { IME_WILL_CHANGE_EVENT as listenedEvent } from '@/hooks/useKeyboardVisible';
 
 const mainActivity = `package com.example
 
@@ -28,6 +29,20 @@ describe('withAndroidImeInsets', () => {
     expect(result).toContain('import androidx.core.view.WindowInsetsAnimationCompat');
     expect(result).toContain('super.onCreate(null)\n    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {\n      setupImeInsets()');
     expect(result.indexOf('private fun setupImeInsets()')).toBeLessThan(result.indexOf('override fun getMainComponentName'));
+  });
+
+  it('tells JS when the keyboard starts to open or close', () => {
+    const result: string = addImeInsets(mainActivity);
+
+    expect(result).toContain('emitImeWillChange(!wasVisible)');
+    expect(result).toContain(`emitDeviceEvent("${IME_WILL_CHANGE_EVENT}", payload)`);
+    expect(IME_WILL_CHANGE_EVENT).toBe(listenedEvent);
+  });
+
+  it('asks for a clean prebuild over an older version of itself', () => {
+    const patchedByOldVersion = mainActivity.replace('{\n  override fun onCreate', '{\n  private fun setupImeInsets() {}\n  override fun onCreate');
+
+    expect(() => addImeInsets(patchedByOldVersion)).toThrow('prebuild --clean');
   });
 
   it('applies only once', () => {

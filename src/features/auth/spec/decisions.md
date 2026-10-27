@@ -50,6 +50,7 @@ Each item records something that is not obvious from the code, and why it is don
 ## Keyboard
 
 - **Android edge-to-edge** (`edgeToEdgeEnabled=true`, target SDK 36) stops `adjustResize` from shrinking the window. `plugins/withAndroidImeInsets.js` (copied from `hotmess-demo`) adds code to `MainActivity.kt` that pads the root view by the keyboard height, animated with the keyboard. Native change: needs a rebuild.
+- **Keyboard starting to move:** the same plugin emits a `imeWillChange` device event (`{ visible }`) from `onPrepare`, before the animation. React Native's own Android keyboard events fire only after it ends. `useKeyboardVisible` (src/hooks) listens for it, so the tab bar (`tabBarHideOnKeyboard`) hides and returns with the keyboard instead of jumping afterwards. The plugin refuses to patch a `MainActivity` changed by its older version; run `npx expo prebuild --clean`.
 - **Moving between fields:** `returnKeyType="next"`, `submitBehavior="submit"` (keeps the keyboard open) and `onSubmitEditing` focusing the next field's ref. The last field submits the form.
 - **Focused field into view:** Android's `ReactScrollView.requestChildFocus` already scrolls the focused field into view, so there is no JS code for that.
 - **Submit button into view:** `AuthLayout` + `useKeyboardReveal` scroll so the element wrapped in `KeyboardRevealTarget` (the submit button) sits above the keyboard. It runs on `keyboardDidShow` and again on the scroll view's `onLayout`, because the Android padding shrinks the view after the event. It only scrolls if the button is hidden.

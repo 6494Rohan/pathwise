@@ -1,10 +1,11 @@
 import * as auth from '..';
 
 describe('auth feature public API', () => {
-  it('exposes the screens, sign-out button and session hooks', () => {
+  it('exposes the screens, auth buttons and session hooks', () => {
     expect(Object.keys(auth).sort()).toEqual([
       'LoginScreen',
       'SignOutButton',
+      'SignUpHeaderButton',
       'SignUpScreen',
       'VerifyEmailScreen',
       'authKeys',

@@ -30,7 +30,7 @@ npx ampx sandbox --once     # deploy your Amplify sandbox backend and write ampl
 
 | Path | Responsibility |
 |---|---|
-| `src/components/` | Shared UI built on the theme, grouped by category: `button/` (`Button`), `typography/` (`AppText`), `input/` (`Input`), `common/` (`SafeAreaScreen`, `Header`, `ComingSoon`). Import from the category folder: `import { Button } from '@/components/button'`. There is no global `src/components/index.ts`. |
+| `src/components/` | Shared UI built on the theme, grouped by category: `button/` (`Button`, `PillButton`), `typography/` (`AppText`), `input/` (`Input`), `common/` (`SafeAreaScreen`, `Header`, `ComingSoon`). Import from the category folder: `import { Button } from '@/components/button'`. There is no global `src/components/index.ts`. |
 | `src/features/<feature>/` | One folder per feature, including its screens — see **Feature structure** below. |
 | `src/services/api.ts` | The shared axios client — the only place HTTP happens. Feature services validate its responses with Zod. |
 | `src/services/queryClient.ts` | The shared React Query client (defaults). |
@@ -40,7 +40,7 @@ npx ampx sandbox --once     # deploy your Amplify sandbox backend and write ampl
 | `src/theme/` | Design tokens: `colors.ts` (`lightColors` + `darkColors`), `spacing.ts`, `radius.ts`, `typography.ts`, and `useTheme()`. |
 | `src/utils/scaling.ts` | `scale`, `verticalScale`, `moderateScale`, `fontScale` (clamped to the phone size range, pixel-rounded). Used by the theme; see **Sizing and scaling** for direct use. |
 | `src/utils/validation.ts` | `validateForm(schema, values)` for form field errors. |
-| `src/navigation/` | React Navigation navigators (this project does **not** use Expo Router). `TabNavigator` builds the bottom tabs from its `TABS` config (route, screen, i18n namespace, icon); each tab's label is `<namespace>:tabTitle` and its header title `<namespace>:title`. The tab bar is the custom `components/AppTabBar` and every tab gets the shared `Header` (with `headerRight` actions) through `screenOptions`. Tab screens use `<SafeAreaScreen edges={[]}>` because the header and tab bar already apply the insets. |
+| `src/navigation/` | React Navigation navigators (this project does **not** use Expo Router). `TabNavigator` builds the bottom tabs from its `TABS` config (route, screen, i18n namespace, icon); each tab's label is `<namespace>:tabTitle` and its header title `<namespace>:title`. The tab bar is the custom `components/AppTabBar` (it honours `tabBarHideOnKeyboard`, on for all tabs) and every tab gets the shared `Header` (with `headerRight` actions) through `screenOptions`. Tab screens use `<SafeAreaScreen edges={[]}>` because the header and tab bar already apply the insets. |
 | `src/services/amplify.ts`, `src/services/secureTokenStorage.ts` | App-wide Amplify setup and token storage — see the [auth spec](src/features/auth/spec/README.md). |
 | `amplify/` | Amplify Gen 2 backend, deployed per developer with `npx ampx sandbox --once`. Typecheck with `npx tsc -p amplify --noEmit`. Details in the [auth spec](src/features/auth/spec/setup.md). |
 | `plugins/` | Expo config plugins (`withAndroidImeInsets` keeps content above the Android keyboard). Native: changing one needs `npm run build`. |
@@ -77,6 +77,7 @@ Feature-specific context lives with the feature, not in this file. A feature tha
 | Spec | Read it before changing |
 |---|---|
 | [`src/features/auth/spec/`](src/features/auth/spec/README.md) | `src/features/auth/`, `src/services/amplify.ts`, `src/services/secureTokenStorage.ts`, `amplify/`, `plugins/withAndroidImeInsets.js`, or anything about sign-in, the session or tokens |
+| [`src/features/jobs/spec/`](src/features/jobs/spec/README.md) | `src/features/jobs/`, the map, or the `react-native-maps` plugin in `app.config.ts` |
 
 - **Read the relevant `spec/` before changing that code.** Add a row here when a new feature gets a spec.
 - **Update the spec in the same change** when behaviour, setup, a decision or the status changes. A stale spec is worse than none.
@@ -139,8 +140,8 @@ The app follows the phone's light/dark setting. All visual values come from `src
 | Spacing (padding, margin, gap) | `spacing[n]`, keyed by the Figma `space/n` token — `2`, `4`, `6`, `8`, `12`, `16`, `20`, `24`, `32` (already scaled). Use the nearest step. |
 | Corner radius | `radius` — `sm` 8, `md` 12, `lg` 16, `xl` 24 (already scaled), `full` 999 for pills. Larger containers get larger corners. |
 | Screen root | Wrap every screen in `<SafeAreaScreen>` from `src/components/common` — it adds safe-area padding and the app background. Default edges are top and bottom; pass `edges={['top']}` etc. to change them. Never use `SafeAreaView` or a full-screen `View` with `flex: 1` and a background directly. |
-| Buttons, inputs | `Button` (`variant`: `primary` / `secondary`, `loading`) and `Input` (`error`, `leftIcon`, `rightAccessory`, `ref` forwarded to the `TextInput`) from `src/components/button` and `src/components/input`. Don't use React Native's `Button` or style `TextInput` per screen. In forms, chain fields with `returnKeyType="next"`, `submitBehavior="submit"` and `onSubmitEditing` → next field's `ref.focus()`. |
-| Icons | `Ionicons` imported from `@expo/vector-icons/Ionicons` (never the package root — Metro has no tree shaking), sized with `moderateScale(n)`, coloured with `colors.icon*`. |
+| Buttons, inputs | `Button` (`variant`: `primary` / `secondary`, `loading`) and `Input` (`error`, `leftIcon`, `rightAccessory`, `variant`: `filled` / `floating` (white pill over a map), `ref` forwarded to the `TextInput`) from `src/components/button` and `src/components/input`. Don't use React Native's `Button` or style `TextInput` per screen. In forms, chain fields with `returnKeyType="next"`, `submitBehavior="submit"` and `onSubmitEditing` → next field's `ref.focus()`. |
+| Icons | `Ionicons` imported from `@expo/vector-icons/Ionicons` (never the package root — Metro has no tree shaking), sized with `moderateScale(n)`, coloured with `colors.icon*`. Custom icons: `.svg` files in `src/assets/icons/` using `currentColor`, imported as components. |
 | Element sizes, icons, touch targets | See **Sizing and scaling** below. |
 
 Styles that use colors are created from the current theme; styles without colors stay a plain static `StyleSheet`:

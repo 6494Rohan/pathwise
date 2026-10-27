@@ -20,9 +20,8 @@ export default function AppNavigator() {
   return (
     <NavigationContainer theme={navigationTheme}>
       <Stack.Navigator screenOptions={screenOptions}>
-        {user ? (
-          <Stack.Screen name="Main" component={TabNavigator} />
-        ) : (
+        <Stack.Screen name="Main" component={TabNavigator} />
+        {user ? null : (
           <>
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="SignUp" component={SignUpScreen} />

@@ -1,19 +1,28 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { initialWindowMetrics } from 'react-native-safe-area-context';
 import { AppText } from '@/components/typography';
+import { useKeyboardVisible } from '@/hooks/useKeyboardVisible';
 import { radius, spacing, ThemeColors, useTheme } from '@/theme';
 import { moderateScale } from '@/utils/scaling';
 
 const ICON_SIZE = moderateScale(22);
 const LABEL_MAX_FONT_SCALE = 1.3;
+// The keyboard covers the gesture bar, so its inset reads 0 and then climbs back for ~300 ms after the keyboard
+// closes, bouncing the bar. The gesture bar never really changes, so never go below its height at startup.
+const MIN_BOTTOM_INSET = initialWindowMetrics?.insets.bottom ?? 0;
 
 export default function AppTabBar({ state, descriptors, navigation, insets }: BottomTabBarProps) {
   const { colors } = useTheme();
   const styles = createStyles(colors);
+  const isKeyboardVisible = useKeyboardVisible();
+  const focusedOptions = descriptors[state.routes[state.index].key].options;
+
+  if (isKeyboardVisible && focusedOptions.tabBarHideOnKeyboard) return null;
 
   return (
-    <View style={[styles.bar, { paddingBottom: insets.bottom + spacing[8] }]}>
+    <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, MIN_BOTTOM_INSET) + spacing[8] }]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;

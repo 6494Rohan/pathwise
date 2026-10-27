@@ -20,6 +20,7 @@ describe('TabNavigator', () => {
     }
     expect(screen.getByRole('tab', { name: 'Jobs' })).toBeSelected();
     expect(screen.getByRole('header', { name: 'Opportunities' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Share' })).toBeOnTheScreen();
   });
 
   it('switches tab and header when another tab is pressed', async () => {
