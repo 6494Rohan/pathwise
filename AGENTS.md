@@ -79,6 +79,7 @@ Feature-specific context lives with the feature, not in this file. A feature tha
 | [`src/features/auth/spec/`](src/features/auth/spec/README.md) | `src/features/auth/`, `src/services/amplify.ts`, `src/services/secureTokenStorage.ts`, `amplify/`, `plugins/withAndroidImeInsets.js`, or anything about sign-in, the session or tokens |
 | [`src/features/jobs/spec/`](src/features/jobs/spec/README.md) | `src/features/jobs/`, the map, or the `react-native-maps` plugin in `app.config.ts` |
 | [`src/features/profile/spec/`](src/features/profile/spec/README.md) | `src/features/profile/`, resume upload or parsing |
+| [`src/features/splash/spec/`](src/features/splash/spec/README.md) | `src/features/splash/`, the `expo-splash-screen` plugin in `app.config.ts`, startup permissions |
 
 - **Read the relevant `spec/` before changing that code.** Add a row here when a new feature gets a spec.
 - **Update the spec in the same change** when behaviour, setup, a decision or the status changes. A stale spec is worse than none.
@@ -136,7 +137,7 @@ The app follows the phone's light/dark setting. All visual values come from `src
 
 | Need | Use |
 |---|---|
-| Colors | `const { colors } = useTheme()` → `colors.<name>`, named after the Figma variables (`bg/brand` → `bgBrand`): brand `bgBrand`, `bgBrandSubtle`, `bgBrandSoft`, `bgBrandPressed`, `textBrand`, `borderBrand`, `iconBrand`; surfaces `bgCanvas`, `bgSubtle`, `bgMuted`, `bgScrim`; content `textPrimary`, `textSecondary`, `textTertiary`, `textOnBrand`, `iconDefault`, `iconMuted`, `iconOnBrand`; borders `borderDefault`, `borderStrong`; status `statusSuccess`/`statusWarning`/`statusDanger` + `…Bg`; accents `accentViolet`/`accentTeal` + `…Bg`. Never import a palette directly. Need a new color? Add it to **both** `lightColors` and `darkColors` in `colors.ts` (a missing dark value fails `tsc`). |
+| Colors | `const { colors } = useTheme()` → `colors.<name>`, named after the Figma variables (`bg/brand` → `bgBrand`): brand `bgBrand`, `bgBrandSubtle`, `bgBrandSoft`, `bgBrandPressed`, `textBrand`, `borderBrand`, `iconBrand`; surfaces `bgCanvas`, `bgSubtle`, `bgMuted`, `bgScrim`, `bgSheet` (bottom sheets); content `textPrimary`, `textSecondary`, `textTertiary`, `textOnBrand`, `iconDefault`, `iconMuted`, `iconOnBrand`; borders `borderDefault`, `borderStrong`; status `statusSuccess`/`statusWarning`/`statusDanger` + `…Bg`; accents `accentViolet`/`accentTeal` + `…Bg`. Never import a palette directly. Need a new color? Add it to **both** `lightColors` and `darkColors` in `colors.ts` (a missing dark value fails `tsc`). |
 | Text | `<AppText variant="...">` — Plus Jakarta Sans, named after the Figma text styles: `displaySheet`, `heading1`–`heading3`, `titleCard`, `body`, `bodyMedium`, `bodySmall`, `labelLarge`, `labelMedium`, `labelSmall`, `caption` (plus `code`, monospace). Change color with `color="statusDanger"` etc. The font is embedded at build time by the `expo-font` plugin in `app.config.ts`, so changing it needs a new native build. Never set `fontSize`/`fontWeight` in a screen. |
 | Spacing (padding, margin, gap) | `spacing[n]`, keyed by the Figma `space/n` token — `2`, `4`, `6`, `8`, `12`, `16`, `20`, `24`, `32` (already scaled). Use the nearest step. |
 | Corner radius | `radius` — `sm` 8, `md` 12, `lg` 16, `xl` 24 (already scaled), `full` 999 for pills. Larger containers get larger corners. |

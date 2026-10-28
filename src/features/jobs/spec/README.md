@@ -35,6 +35,17 @@ Search runs while typing: `usePlaceSearch` waits for a 600 ms pause (`useDebounc
 - **Dummy data:** `services/dummyJobsData.ts` holds backend-shaped responses for coastal Karnataka companies; `jobsService` returns them after 400 ms. To switch to the API, replace `respond(...)` with `api.get(...)` and adjust `acl/jobs.dto.ts` to the real field names. Nothing outside `acl/` and `services/` changes.
 - **Endpoints assumed:** a list of companies with `lat`, `lng` and `open_jobs_count`, and the jobs of one company. Confirm with the backend.
 
+## Filters sheet
+
+The list view's filter button opens `JobFiltersSheet` ("All Filters"): collapsible sections (`FilterSection`), one open at a time, each showing "Any", the chosen value or "N selected".
+
+- **Sections:** Location (`cities`), Country, Job Title (`titles`), Company, Experience (one value), Aging (one posting-age bucket, shared with the quick-filter chips), Skills. Location, Job Title, Company and Skills come from `GET /jobs/filters` with job counts and have their own search box (`FilterOptionList`, filters the loaded options locally, shows at most 50).
+- **Country is display-only ("India"):** all jobs are in India and the `jobs` table has no country column. Make it a real filter once the data has countries.
+- **Draft, then apply:** the screen keeps the draft (`filtersDraft`); the sheet is controlled. While it is open, `useJobCount` asks `GET /jobs?pageSize=1` for the total with the draft applied (`withAdvanced`), so the button reads "Show N jobs". Nothing changes in the list until it is pressed.
+- **Quick filters row** (`QuickFilters`): the filter button (opens the full sheet), toggles Verified / Last 24 hours / Last week (`lastWeek` = posted in the last 7 days), then dropdown chips Location, India, Job Title, Company, Aging, Skills (`useQuickFilterDropdowns`). A dropdown opens the sheet focused on that one filter (`focusSection`): its title, search and list, and Reset clears only that filter. India opens the full sheet, since Country is display-only. A chosen filter fills its chip and shows the value ("Pune") or a count ("Skills (2)").
+- **Keyboard:** the sheet is a `Modal`, a separate Android window that `withAndroidImeInsets` doesn't pad, so it uses `KeyboardAvoidingView` with `padding` on both platforms. The single-filter sheet has a fixed height (`flex: 1` under a 10% backdrop) and only its list scrolls, so the search box stays put and the sheet doesn't shrink behind the keyboard as results narrow.
+- **Backend:** `cities` and `titles` are exact-match comma lists; the options endpoint returns the 200 values with most open jobs per list.
+
 ## Decisions
 
 - **`react-native-maps`, not `expo-maps`:** `expo-maps` is alpha in SDK 58 and has no marker clustering.

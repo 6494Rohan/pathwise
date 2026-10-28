@@ -16,13 +16,15 @@ import QuickFilters from '../components/QuickFilters';
 import SearchBar from '../components/SearchBar';
 import SortSheet from '../components/SortSheet';
 import ViewModeToggle from '../components/ViewModeToggle';
-import { useJobListFilters } from '../hooks/useJobListFilters';
+import { AdvancedJobFilters, NO_ADVANCED_FILTERS, useJobListFilters } from '../hooks/useJobListFilters';
 import { usePlaceSearch } from '../hooks/usePlaceSearch';
+import { useQuickFilterDropdowns } from '../hooks/useQuickFilterDropdowns';
 import { useCurrentLocation } from '../queries/useCurrentLocation';
+import { useJobCount } from '../queries/useJobCount';
 import { useJobFilterOptions } from '../queries/useJobFilterOptions';
 import { useJobListings } from '../queries/useJobListings';
 import { useMapCompanies } from '../queries/useMapCompanies';
-import { JobListing, JobSort, JobsSection, JobsViewMode, LocationError, MapCompany } from '../types/jobs.types';
+import { JobFilterSection, JobListing, JobSort, JobsSection, JobsViewMode, LocationError, MapCompany } from '../types/jobs.types';
 
 const NO_COMPANIES: MapCompany[] = [];
 const ZOOM_STEP = 2;
@@ -33,10 +35,13 @@ export default function OpportunitiesScreen() {
   const [viewMode, setViewMode] = useState<JobsViewMode>('map');
   const [selectedCompany, setSelectedCompany] = useState<MapCompany | null>(null);
   const [isFiltersSheetOpen, setFiltersSheetOpen] = useState(false);
+  const [filtersSection, setFiltersSection] = useState<JobFilterSection>();
+  const [filtersDraft, setFiltersDraft] = useState<AdvancedJobFilters>(NO_ADVANCED_FILTERS);
   const [sort, setSort] = useState<JobSort>('newest');
   const [isSortSheetOpen, setSortSheetOpen] = useState(false);
   const jobFilters = useJobListFilters();
   const { filters } = jobFilters;
+  const quickDropdowns = useQuickFilterDropdowns(jobFilters.advanced);
   const isAllJobs = section === 'allJobs';
   const showsMap = isAllJobs && viewMode === 'map';
   const showsList = isAllJobs && viewMode === 'list';
@@ -48,6 +53,7 @@ export default function OpportunitiesScreen() {
     { enabled: selectedCompany !== null }
   );
   const filterOptions = useJobFilterOptions({ enabled: isFiltersSheetOpen });
+  const draftCount = useJobCount(jobFilters.withAdvanced(filtersDraft), { enabled: isFiltersSheetOpen });
   const placeSearch = usePlaceSearch();
   const currentLocation = useCurrentLocation();
   const mapRef = useRef<JobsMapHandle>(null);
@@ -65,6 +71,12 @@ export default function OpportunitiesScreen() {
     Share.share({ message: t('jobActions.shareMessage', { title: job.title, company: job.company.name, url }) });
   };
   const saveJob = () => Alert.alert(t('common:comingSoon'));
+
+  const openFilters = (section?: JobFilterSection) => {
+    setFiltersSection(section);
+    setFiltersDraft(jobFilters.advanced);
+    setFiltersSheetOpen(true);
+  };
 
   const toggle = <ViewModeToggle value={viewMode} onChange={setViewMode} />;
 
@@ -100,11 +112,12 @@ export default function OpportunitiesScreen() {
               activeCount={jobFilters.activeCount}
               verifiedOnly={jobFilters.verifiedOnly}
               last24Hours={jobFilters.last24Hours}
-              postedAge={jobFilters.postedAge}
-              onOpenFilters={() => setFiltersSheetOpen(true)}
+              lastWeek={jobFilters.lastWeek}
+              dropdowns={quickDropdowns}
+              onOpenFilters={openFilters}
               onToggleVerified={jobFilters.toggleVerified}
               onToggleLast24Hours={jobFilters.toggleLast24Hours}
-              onTogglePostedAge={jobFilters.togglePostedAge}
+              onToggleLastWeek={jobFilters.toggleLastWeek}
             />
             <JobList
               jobs={listings.data?.jobs ?? []}
@@ -177,10 +190,16 @@ export default function OpportunitiesScreen() {
       />
       <JobFiltersSheet
         visible={isFiltersSheetOpen}
-        initial={jobFilters.advanced}
+        focusSection={filtersSection}
+        value={filtersDraft}
         options={filterOptions.data}
-        onApply={(advanced) => {
-          jobFilters.applyAdvanced(advanced);
+        isOptionsError={filterOptions.isError}
+        onRetryOptions={() => filterOptions.refetch()}
+        matchCount={draftCount.data}
+        onChange={setFiltersDraft}
+        onReset={() => setFiltersDraft(NO_ADVANCED_FILTERS)}
+        onApply={() => {
+          jobFilters.applyAdvanced(filtersDraft);
           setFiltersSheetOpen(false);
         }}
         onClose={() => setFiltersSheetOpen(false)}

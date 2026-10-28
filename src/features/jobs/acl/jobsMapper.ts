@@ -72,6 +72,7 @@ export const toJobFilterParams = (filters: JobListFilters): JobFilterParamsDto =
   ...(filters.search?.trim() && { q: filters.search.trim() }),
   ...(filters.verifiedOnly && { verified: 'true' }),
   ...(filters.last24Hours && { last24Hours: 'true' }),
+  ...(filters.lastWeek && { lastWeek: 'true' }),
   ...(filters.postedAge && { age: filters.postedAge }),
   ...(filters.near && {
     lat: filters.near.coordinate.latitude,
@@ -82,6 +83,8 @@ export const toJobFilterParams = (filters: JobListFilters): JobFilterParamsDto =
   ...(filters.skillSlugs?.length && { skills: filters.skillSlugs.join(',') }),
   ...(filters.companyIds?.length && { companies: filters.companyIds.join(',') }),
   ...(filters.city && { city: filters.city }),
+  ...(filters.cities?.length && { cities: filters.cities.join(',') }),
+  ...(filters.titles?.length && { titles: filters.titles.join(',') }),
   ...(filters.experienceYears !== undefined && { experience: filters.experienceYears }),
 });
 
@@ -101,6 +104,8 @@ export const toJobsQueryParams = (
 export const toJobFilterOptions = (raw: unknown): JobFilterOptions => {
   const dto = JobFilterOptionsResponseDtoSchema.parse(raw);
   return {
+    cities: dto.cities.map((city) => ({ name: city.city, jobCount: city.job_count })),
+    titles: dto.titles.map((title) => ({ name: title.job_title, jobCount: title.job_count })),
     skills: dto.skills.map((skill) => ({ slug: skill.slug, name: skill.skill_name, jobCount: skill.job_count })),
     companies: dto.companies.map((company) => ({
       id: company.company_id,

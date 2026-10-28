@@ -3,7 +3,7 @@ import { fontScale, moderateScale, scale, verticalScale } from '../scaling';
 
 describe('scaling', () => {
   it('never scales wider than the largest supported phone', () => {
-    expect(scale(375)).toBeLessThanOrEqual(440);
+    expect(scale(360)).toBeLessThanOrEqual(440);
   });
 
   it('puts moderate scaling between the design size and full scaling', () => {

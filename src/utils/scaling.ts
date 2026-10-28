@@ -1,8 +1,8 @@
 import { Dimensions, PixelRatio } from 'react-native';
 
 // Must match the Figma frame size, in points.
-const GUIDELINE_BASE_WIDTH = 375;
-const GUIDELINE_BASE_HEIGHT = 812;
+const GUIDELINE_BASE_WIDTH = 360;
+const GUIDELINE_BASE_HEIGHT = 800;
 
 // Screens outside this phone range (e.g. tablets) scale like the nearest phone.
 const MIN_WIDTH = 320;

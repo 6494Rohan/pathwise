@@ -121,13 +121,17 @@ describe('toJobFilterParams / toJobsQueryParams', () => {
 });
 
 describe('toJobFilterOptions', () => {
-  it('maps skills and companies with their job counts', () => {
+  it('maps cities, titles, skills and companies with their job counts', () => {
     const raw = {
+      cities: [{ city: 'Pune', job_count: 21 }],
+      titles: [{ job_title: 'QA Engineer', job_count: 5 }],
       skills: [{ skill_id: 's1', skill_name: 'React', slug: 'react', job_count: 9 }],
       companies: [{ company_id: 'c1', company_name: 'Freshworks', is_verified: true, job_count: 8 }],
     };
 
     expect(toJobFilterOptions(raw)).toEqual({
+      cities: [{ name: 'Pune', jobCount: 21 }],
+      titles: [{ name: 'QA Engineer', jobCount: 5 }],
       skills: [{ slug: 'react', name: 'React', jobCount: 9 }],
       companies: [{ id: 'c1', name: 'Freshworks', isVerified: true, jobCount: 8 }],
     });

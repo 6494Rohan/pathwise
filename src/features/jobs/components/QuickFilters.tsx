@@ -5,21 +5,23 @@ import { useTranslation } from 'react-i18next';
 import { AppText } from '@/components/typography';
 import { radius, spacing, ThemeColors, useTheme } from '@/theme';
 import { moderateScale } from '@/utils/scaling';
-import type { PostedAge } from '../types/jobs.types';
+import type { QuickFilterDropdown } from '../hooks/useQuickFilterDropdowns';
+import type { JobFilterSection } from '../types/jobs.types';
 
 const ICON_SIZE = moderateScale(20);
 const DOT_SIZE = spacing[6];
-const POSTED_AGES: PostedAge[] = ['0-3', '3-7', '7-15', '15-30', '30+'];
+const CHEVRON_SIZE = moderateScale(14);
 
 interface QuickFiltersProps {
   activeCount: number;
   verifiedOnly: boolean;
   last24Hours: boolean;
-  postedAge?: PostedAge;
-  onOpenFilters: () => void;
+  lastWeek: boolean;
+  dropdowns: QuickFilterDropdown[];
+  onOpenFilters: (section?: JobFilterSection) => void;
   onToggleVerified: () => void;
   onToggleLast24Hours: () => void;
-  onTogglePostedAge: (postedAge: PostedAge) => void;
+  onToggleLastWeek: () => void;
 }
 
 interface ChipProps {
@@ -48,15 +50,36 @@ function Chip({ label, selected, onPress }: ChipProps) {
   );
 }
 
+function DropdownChip({ label, selected, onPress }: ChipProps) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected }}
+      onPress={onPress}
+      style={[styles.chip, selected && styles.dropdownSelected]}
+    >
+      <AppText variant="labelMedium" color={selected ? 'textOnBrand' : 'textPrimary'} maxFontSizeMultiplier={1.3}>
+        {label}
+      </AppText>
+      <Ionicons name="chevron-down" size={CHEVRON_SIZE} color={selected ? colors.iconOnBrand : colors.iconMuted} />
+    </Pressable>
+  );
+}
+
 export default function QuickFilters({
   activeCount,
   verifiedOnly,
   last24Hours,
-  postedAge,
+  lastWeek,
+  dropdowns,
   onOpenFilters,
   onToggleVerified,
   onToggleLast24Hours,
-  onTogglePostedAge,
+  onToggleLastWeek,
 }: QuickFiltersProps) {
   const { t } = useTranslation('jobs');
   const { colors } = useTheme();
@@ -72,7 +95,7 @@ export default function QuickFilters({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={activeCount ? t('filters.activeCount', { count: activeCount }) : t('filters.open')}
-        onPress={onOpenFilters}
+        onPress={() => onOpenFilters()}
         style={styles.filterButton}
       >
         <Ionicons name="options-outline" size={ICON_SIZE} color={colors.iconBrand} />
@@ -86,8 +109,14 @@ export default function QuickFilters({
       </Pressable>
       <Chip label={t('filters.verified')} selected={verifiedOnly} onPress={onToggleVerified} />
       <Chip label={t('filters.last24Hours')} selected={last24Hours} onPress={onToggleLast24Hours} />
-      {POSTED_AGES.map((age) => (
-        <Chip key={age} label={t(`filters.age.${age}`)} selected={postedAge === age} onPress={() => onTogglePostedAge(age)} />
+      <Chip label={t('filters.lastWeek')} selected={lastWeek} onPress={onToggleLastWeek} />
+      {dropdowns.map((dropdown) => (
+        <DropdownChip
+          key={dropdown.section}
+          label={dropdown.label}
+          selected={dropdown.selected}
+          onPress={() => onOpenFilters(dropdown.section)}
+        />
       ))}
     </ScrollView>
   );
@@ -140,6 +169,10 @@ const createStyles = (colors: ThemeColors) =>
     chipSelected: {
       borderColor: colors.borderBrand,
       backgroundColor: colors.bgBrandSubtle,
+    },
+    dropdownSelected: {
+      borderColor: colors.borderBrand,
+      backgroundColor: colors.bgBrand,
     },
     dot: {
       width: DOT_SIZE,

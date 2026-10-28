@@ -41,12 +41,15 @@ export interface JobListFilters {
   search?: string;
   verifiedOnly?: boolean;
   last24Hours?: boolean;
+  lastWeek?: boolean;
   postedAge?: PostedAge;
   near?: { coordinate: Coordinate; radiusKm: number };
   title?: string;
   skillSlugs?: string[];
   companyIds?: string[];
   city?: string;
+  cities?: string[];
+  titles?: string[];
   experienceYears?: number;
 }
 
@@ -58,9 +61,13 @@ export interface JobListingsPage {
 }
 
 export interface JobFilterOptions {
+  cities: { name: string; jobCount: number }[];
+  titles: { name: string; jobCount: number }[];
   skills: { slug: string; name: string; jobCount: number }[];
   companies: { id: string; name: string; isVerified: boolean; jobCount: number }[];
 }
+
+export type JobFilterSection = 'location' | 'country' | 'jobTitle' | 'company' | 'experience' | 'aging' | 'skills';
 
 export type JobsSection = 'recommended' | 'allJobs' | 'saved' | 'applied';
 

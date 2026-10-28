@@ -7,6 +7,7 @@ import { jobsTranslations } from '@/features/jobs/i18n';
 import { learningTranslations } from '@/features/learning/i18n';
 import { profileTranslations } from '@/features/profile/i18n';
 import { skillsTranslations } from '@/features/skills/i18n';
+import { splashTranslations } from '@/features/splash/i18n';
 import en from './locales/en.json';
 import hi from './locales/hi.json';
 
@@ -18,6 +19,7 @@ export const resources = {
     skills: skillsTranslations.en,
     learning: learningTranslations.en,
     profile: profileTranslations.en,
+    splash: splashTranslations.en,
   },
   hi: {
     common: hi satisfies typeof en,
@@ -26,6 +28,7 @@ export const resources = {
     skills: skillsTranslations.hi,
     learning: learningTranslations.hi,
     profile: profileTranslations.hi,
+    splash: splashTranslations.hi,
   },
 };
 

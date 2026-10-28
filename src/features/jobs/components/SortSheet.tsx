@@ -65,7 +65,7 @@ const createStyles = (colors: ThemeColors) =>
       paddingHorizontal: spacing[16],
       borderTopLeftRadius: radius.xl,
       borderTopRightRadius: radius.xl,
-      backgroundColor: colors.bgCanvas,
+      backgroundColor: colors.bgSheet,
     },
     title: {
       marginBottom: spacing[8],

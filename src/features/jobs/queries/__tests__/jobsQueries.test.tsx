@@ -67,13 +67,13 @@ describe('jobs queries', () => {
   });
 
   it('loads filter options only when asked', async () => {
-    jest.mocked(jobsService.getFilterOptions).mockResolvedValue({ skills: [], companies: [] });
+    jest.mocked(jobsService.getFilterOptions).mockResolvedValue({ cities: [], titles: [], skills: [], companies: [] });
 
     const idle = await renderHook(() => useJobFilterOptions({ enabled: false }), { wrapper: createQueryWrapper() });
     expect(idle.result.current.fetchStatus).toBe('idle');
 
     const { result } = await renderHook(() => useJobFilterOptions(), { wrapper: createQueryWrapper() });
-    await waitFor(() => expect(result.current.data).toEqual({ skills: [], companies: [] }));
+    await waitFor(() => expect(result.current.data).toEqual({ cities: [], titles: [], skills: [], companies: [] }));
     expect(jobsKeys.filterOptions()).toEqual(['jobs', 'filterOptions']);
   });
 

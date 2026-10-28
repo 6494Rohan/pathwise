@@ -29,8 +29,9 @@ function getIconPath(prefix: string) {
   return `./src/assets/icons/${prefix}-develop.png`;
 }
 
+// The splash always shows the plain logo (no DEV/QA badge) so it matches the animated splash's logo.
 function getSplashPath() {
-  return getAppIcon();
+  return "./src/assets/icons/icon-prod.png";
 }
 
 function getAppIcon() {
@@ -80,11 +81,6 @@ export default {
   version: "1.0.0",
   orientation: "portrait",
   icon: getAppIcon(),
-  splash: {
-    image: getSplashPath(),
-    resizeMode: "cover",
-    backgroundColor: "#000000",
-  },
   scheme: ["pathwise", getBundleIdentifier()],
   userInterfaceStyle: "automatic",
   experiments: {
@@ -125,6 +121,16 @@ export default {
         android: {
           fonts: [{ fontFamily: "Plus Jakarta Sans", fontDefinitions: plusJakartaSansFonts }],
         },
+      },
+    ],
+    [
+      "expo-splash-screen",
+      {
+        // Same logo, size and colour as the animated splash (src/features/splash), so the hand-off doesn't jump.
+        image: getSplashPath(),
+        imageWidth: 120,
+        resizeMode: "contain",
+        backgroundColor: "#4F46E5",
       },
     ],
     "expo-localization",

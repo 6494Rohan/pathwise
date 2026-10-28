@@ -1,5 +1,9 @@
+// The splash stays brand indigo in both modes; app.config.ts uses the same hex for the native splash.
+export const SPLASH_BACKGROUND = '#4F46E5';
+
 export const lightColors = {
   bgBrand: '#4F46E5',
+  bgSplash: SPLASH_BACKGROUND,
   bgBrandSubtle: '#EEF2FF',
   bgBrandSoft: '#E0E7FF',
   bgBrandPressed: '#4338CA',
@@ -11,6 +15,7 @@ export const lightColors = {
   bgSubtle: '#F8FAFC',
   bgMuted: '#F1F5F9',
   bgScrim: '#0F172A',
+  bgSheet: '#FFFFFF',
   textPrimary: '#0F172A',
   textSecondary: '#475569',
   textTertiary: '#64748B',
@@ -39,6 +44,7 @@ export type ColorName = keyof ThemeColors;
 // Not in the design file yet: mirrors the light roles with Tailwind Slate/Indigo dark shades.
 export const darkColors: ThemeColors = {
   bgBrand: '#6366F1',
+  bgSplash: SPLASH_BACKGROUND,
   bgBrandSubtle: '#1E1B4B',
   bgBrandSoft: '#312E81',
   bgBrandPressed: '#4F46E5',
@@ -50,6 +56,7 @@ export const darkColors: ThemeColors = {
   bgSubtle: '#0F172A',
   bgMuted: '#1E293B',
   bgScrim: '#020617',
+  bgSheet: '#0F172A',
   textPrimary: '#F8FAFC',
   textSecondary: '#CBD5E1',
   textTertiary: '#94A3B8',

@@ -45,6 +45,8 @@ export const JobsPageResponseDtoSchema = z.object({
 });
 
 export const JobFilterOptionsResponseDtoSchema = z.object({
+  cities: z.array(z.object({ city: z.string(), job_count: z.number().int() })),
+  titles: z.array(z.object({ job_title: z.string(), job_count: z.number().int() })),
   skills: z.array(z.object({ skill_id: z.string(), skill_name: z.string(), slug: z.string(), job_count: z.number().int() })),
   companies: z.array(
     z.object({ company_id: z.string(), company_name: z.string(), is_verified: z.boolean(), job_count: z.number().int() })
@@ -57,6 +59,7 @@ export interface JobFilterParamsDto {
   q?: string;
   verified?: 'true';
   last24Hours?: 'true';
+  lastWeek?: 'true';
   age?: '0-3' | '3-7' | '7-15' | '15-30' | '30+';
   lat?: number;
   lng?: number;
@@ -65,6 +68,8 @@ export interface JobFilterParamsDto {
   skills?: string;
   companies?: string;
   city?: string;
+  cities?: string;
+  titles?: string;
   experience?: number;
 }
 

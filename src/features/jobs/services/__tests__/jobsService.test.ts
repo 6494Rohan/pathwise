@@ -24,9 +24,10 @@ describe('jobsService', () => {
   });
 
   it('loads filter options from GET /jobs/filters', async () => {
-    jest.mocked(api.get).mockResolvedValue({ skills: [], companies: [] });
+    const options = { cities: [], titles: [], skills: [], companies: [] };
+    jest.mocked(api.get).mockResolvedValue(options);
 
-    await expect(jobsService.getFilterOptions()).resolves.toEqual({ skills: [], companies: [] });
+    await expect(jobsService.getFilterOptions()).resolves.toEqual(options);
     expect(api.get).toHaveBeenCalledWith('/jobs/filters');
   });
 
