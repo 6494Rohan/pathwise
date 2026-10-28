@@ -16,14 +16,18 @@ const formatMonth = (yearMonth: string, locale: string) => {
 
 export default function ProfileEntryItem({ entry }: ProfileEntryItemProps) {
   const { t, i18n } = useTranslation('profile');
-  const start = formatMonth(entry.startMonth, i18n.language);
   const end = entry.endMonth ? formatMonth(entry.endMonth, i18n.language) : t('period.present');
+  const period = entry.startMonth
+    ? t('period.range', { start: formatMonth(entry.startMonth, i18n.language), end })
+    : entry.endMonth
+      ? end
+      : null;
 
   return (
     <View style={styles.entry}>
       <AppText variant="titleCard">{entry.title}</AppText>
-      <AppText variant="bodySmall">{entry.subtitle}</AppText>
-      <AppText variant="caption">{t('period.range', { start, end })}</AppText>
+      {entry.subtitle ? <AppText variant="bodySmall">{entry.subtitle}</AppText> : null}
+      {period ? <AppText variant="caption">{period}</AppText> : null}
       {entry.description ? <AppText variant="body">{entry.description}</AppText> : null}
     </View>
   );

@@ -83,3 +83,23 @@ export const api = {
   delete: <T = unknown>(url: string, config?: AxiosRequestConfig) =>
     request<T>({ ...config, method: 'DELETE', url }),
 };
+
+export interface UploadFile {
+  uri: string;
+  name: string;
+  type: string;
+}
+
+const UPLOAD_TIMEOUT_MS = 60000;
+
+// Presigned storage uploads (S3 POST policy) go to another host and must not carry our Authorization header.
+export const uploadClient = axios.create({ timeout: UPLOAD_TIMEOUT_MS });
+uploadClient.interceptors.response.use(undefined, (error: AxiosError) => Promise.reject(toApiError(error)));
+
+export const uploadToPresignedPost = async (url: string, fields: Record<string, string>, file: UploadFile) => {
+  const form = new FormData();
+  Object.entries(fields).forEach(([key, value]) => form.append(key, value));
+  // S3 ignores fields after the file, so it goes last. React Native's FormData takes a { uri, name, type } file.
+  form.append('file', file as unknown as Blob);
+  await uploadClient.post(url, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+};

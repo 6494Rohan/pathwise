@@ -10,12 +10,13 @@ import ProfileCard from './ProfileCard';
 
 const AVATAR_SIZE = scale(56);
 const ICON_SIZE = moderateScale(18);
+const AVATAR_ICON_SIZE = moderateScale(28);
 
 interface ProfileSummaryCardProps {
-  name: string;
-  email: string;
+  name: string | null;
+  email: string | null;
   currentRole: string | null;
-  location: string;
+  location: string | null;
   preferredLocations: string[];
   onEdit: () => void;
 }
@@ -44,18 +45,22 @@ export default function ProfileSummaryCard({
     <ProfileCard>
       <View style={styles.identity}>
         <View style={styles.avatar} accessibilityElementsHidden importantForAccessibility="no">
-          <AppText variant="heading3" color="textOnBrand">
-            {initialsOf(name)}
-          </AppText>
+          {name ? (
+            <AppText variant="heading3" color="textOnBrand">
+              {initialsOf(name)}
+            </AppText>
+          ) : (
+            <Ionicons name="person" size={AVATAR_ICON_SIZE} color={colors.iconOnBrand} />
+          )}
         </View>
         <View style={styles.nameBlock}>
-          <AppText variant="heading2" accessibilityRole="header">
-            {name}
+          <AppText variant="heading2" accessibilityRole="header" color={name ? 'textPrimary' : 'textTertiary'}>
+            {name ?? t('summary.noName')}
           </AppText>
           <View style={styles.row}>
             <Ionicons name="mail-outline" size={ICON_SIZE} color={colors.iconMuted} />
             <AppText variant="bodySmall" style={styles.flexText}>
-              {email}
+              {email ?? t('summary.notSet')}
             </AppText>
           </View>
         </View>
@@ -71,7 +76,7 @@ export default function ProfileSummaryCard({
         <View style={styles.row}>
           <Ionicons name="location-outline" size={ICON_SIZE} color={colors.iconMuted} />
           <AppText variant="body" color="textSecondary" style={styles.flexText}>
-            {location}
+            {location ?? t('summary.notSet')}
           </AppText>
         </View>
         <View style={styles.topRow}>

@@ -9,7 +9,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
     screens: {
       Main: {
         screens: {
-          Jobs: 'jobs',
+          Jobs: 'jobs/:jobId?',
           Skills: 'skills',
           Learning: 'learning',
           Profile: 'profile',

@@ -2,6 +2,8 @@
 
 The Jobs tab (`OpportunitiesScreen`) has four sections (`JobsSectionTabs`): Recommended, All Jobs, Saved, Applied. Only **All Jobs** is built: a map of companies with open jobs, with a location search bar (`LocationSearchBar`), zoom in/out and my-location buttons (`MapControls`) and a map/list toggle (`ViewModeToggle`; list view is a placeholder). Tapping a company pin opens a sheet with its job postings. The Jobs header has `ShareAppButton` (share sheet with an invite message; add a store link once the app is published). Data is **dummy** until the jobs API exists.
 
+Sharing a job card sends `<EXPO_PUBLIC_WEB_URL>/jobs/<job id>`. That path opens the Jobs tab with a `jobId` route param (`navigation/linking.ts`), which a job-detail screen can read; nothing uses it yet.
+
 ## Setup: Google Maps key (Android)
 
 The map uses `react-native-maps` (Google Maps on Android). Android crashes on opening the Jobs tab without a key.

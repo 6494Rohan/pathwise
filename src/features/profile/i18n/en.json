@@ -3,22 +3,42 @@
   "title": "Profile",
   "uploadResume": "Upload Resume",
   "plan": {
-    "guest": "Guest",
+    "free": "Free",
     "pro": "Pro"
   },
   "summary": {
     "editProfile": "Edit profile",
     "notSet": "N/A",
-    "preferredLocations": "Preferred work locations"
+    "preferredLocations": "Preferred work locations",
+    "noName": "Add your name"
   },
   "resume": {
     "type": {
-      "pdf": "PDF · Resume",
-      "doc": "DOC · Resume"
+      "pdf": "PDF · Resume"
     },
     "upload": "Upload a new resume",
     "download": "Download resume",
-    "empty": "No resume yet"
+    "empty": "No resume yet",
+    "importing": "Reading your resume…",
+    "aiNotice": "Your resume is read by AI to fill in your profile. PDF, up to 5 MB and 4 pages.",
+    "imported": {
+      "title": "Profile updated",
+      "body": "We filled in your profile from your resume. Check the details below."
+    },
+    "errors": {
+      "title": "Couldn't use this resume",
+      "tooLarge": "The file is larger than 5 MB.",
+      "tooManyPages": "A resume can have at most 4 pages.",
+      "notPdf": "Choose a PDF file.",
+      "locked": "This PDF is locked. Open it and save or print it as a new PDF, then upload that.",
+      "notResume": "This file doesn't look like a resume.",
+      "unreadable": "We couldn't read this resume. Try another PDF.",
+      "dailyLimit": "You've reached today's limit of resume uploads. Try again tomorrow.",
+      "busy": "Resume reading is busy right now. Try again in a minute.",
+      "unknown": "Something went wrong. Try again.",
+      "download": "Couldn't download your resume. Try again."
+    },
+    "importingHint": "This usually takes about 10 seconds."
   },
   "sections": {
     "experience": "Experience",
@@ -35,5 +55,13 @@
     "title": "Build your profile",
     "body": "Sign up to add your experience, education and resume, and get jobs that match you."
   },
-  "loadError": "Couldn't load your profile."
+  "loadError": "Couldn't load your profile.",
+  "language": {
+    "label": "Language",
+    "sheetTitle": "Choose language",
+    "names": {
+      "en": "English",
+      "hi": "हिन्दी"
+    }
+  }
 }

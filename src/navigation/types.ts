@@ -2,7 +2,7 @@ import type { NavigatorScreenParams } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export type TabParamList = {
-  Jobs: undefined;
+  Jobs: { jobId?: string } | undefined;
   Skills: undefined;
   Learning: undefined;
   Profile: undefined;

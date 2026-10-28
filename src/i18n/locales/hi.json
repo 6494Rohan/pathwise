@@ -2,7 +2,8 @@
   "appName": "pathwise",
   "actions": {
     "retry": "फिर से कोशिश करें",
-    "cancel": "रद्द करें"
+    "cancel": "रद्द करें",
+    "dismiss": "बंद करें"
   },
   "validation": {
     "emailRequired": "ईमेल आवश्यक है",

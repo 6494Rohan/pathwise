@@ -10,7 +10,7 @@ A static site on **Amplify Hosting** (app `pathwise-web`, branch `main`, region 
 ## How the app uses it
 
 - `app.config.ts` adds an `https` intent filter with `autoVerify` for the host in `EXPO_PUBLIC_WEB_URL` (no filter when unset). Native: needs `npm run build`.
-- `src/navigation/linking.ts` maps paths to screens for both `pathwise://` and the web host: `jobs`, `skills`, `learning`, `profile`, `login`, `signup`.
+- `src/navigation/linking.ts` maps paths to screens for both `pathwise://` and the web host: `jobs` (and `jobs/<job id>`, which passes `jobId` to the Jobs tab; shared job links use it), `skills`, `learning`, `profile`, `login`, `signup`.
 
 ## Redeploy after changing a file
 

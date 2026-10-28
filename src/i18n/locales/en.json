@@ -2,7 +2,8 @@
   "appName": "pathwise",
   "actions": {
     "retry": "Retry",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "dismiss": "Dismiss"
   },
   "validation": {
     "emailRequired": "Email is required",

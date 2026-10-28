@@ -59,8 +59,9 @@ export default function OpportunitiesScreen() {
         Alert.alert(t(`locate.errors.${error instanceof LocationError && error.code === 'permissionDenied' ? 'permissionDenied' : 'unknown'}`)),
     });
 
+  // The job id is in the path (`/jobs/<id>`, mapped in navigation/linking.ts) so the link can open that job.
   const shareJob = (job: JobListing) => {
-    const url = env.EXPO_PUBLIC_WEB_URL ? new URL('/jobs', env.EXPO_PUBLIC_WEB_URL).toString() : '';
+    const url = env.EXPO_PUBLIC_WEB_URL ? new URL(`/jobs/${encodeURIComponent(job.id)}`, env.EXPO_PUBLIC_WEB_URL).toString() : '';
     Share.share({ message: t('jobActions.shareMessage', { title: job.title, company: job.company.name, url }) });
   };
   const saveJob = () => Alert.alert(t('common:comingSoon'));
