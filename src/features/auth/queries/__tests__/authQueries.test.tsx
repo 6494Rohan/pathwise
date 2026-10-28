@@ -94,6 +94,43 @@ describe('auth queries', () => {
     expect(queryClient.getQueryData(['users', 'profile', 'u1'])).toBeUndefined();
   });
 
+  it('ignores a session check that finishes after sign-out', async () => {
+    jest.mocked(authService.getSessionUser).mockResolvedValueOnce(user);
+    jest.mocked(authService.signOut).mockResolvedValue(undefined);
+    const queryClient = createTestQueryClient();
+    const { result } = await renderHook(() => ({ session: useSession(), signOut: useSignOut() }), {
+      wrapper: createQueryWrapper(queryClient),
+    });
+    await waitFor(() => expect(result.current.session.data).toEqual(user));
+
+    let finishCheck: (value: typeof user) => void = () => undefined;
+    jest.mocked(authService.getSessionUser).mockReturnValueOnce(new Promise((resolve) => (finishCheck = resolve)));
+    await act(async () => {
+      void queryClient.refetchQueries({ queryKey: authKeys.session() });
+      await result.current.signOut.mutateAsync();
+      finishCheck(user);
+    });
+
+    await waitFor(() => expect(result.current.session.data).toBeNull());
+  });
+
+  it('checks the session again when sign-out fails', async () => {
+    jest.mocked(authService.getSessionUser).mockResolvedValue(user);
+    jest.mocked(authService.signOut).mockRejectedValue(new Error('offline'));
+    const queryClient = createTestQueryClient();
+    const { result } = await renderHook(() => ({ session: useSession(), signOut: useSignOut() }), {
+      wrapper: createQueryWrapper(queryClient),
+    });
+    await waitFor(() => expect(result.current.session.data).toEqual(user));
+    const checksBefore = jest.mocked(authService.getSessionUser).mock.calls.length;
+
+    await act(async () => {
+      await result.current.signOut.mutateAsync().catch(() => undefined);
+    });
+
+    await waitFor(() => expect(jest.mocked(authService.getSessionUser).mock.calls.length).toBe(checksBefore + 1));
+  });
+
   it('refreshes the session after an email sign-in', async () => {
     jest.mocked(authService.signInWithEmail).mockResolvedValue('signedIn');
     const queryClient = createTestQueryClient();

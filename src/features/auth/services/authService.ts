@@ -110,6 +110,9 @@ export const authService = {
     }),
   signOut: async () => {
     await signOut();
-    if (GoogleSignin.hasPreviousSignIn()) await GoogleSignin.signOut();
+    // The Amplify session is already gone; a failed Google sign-out only means the picker may preselect the account.
+    try {
+      if (GoogleSignin.hasPreviousSignIn()) await GoogleSignin.signOut();
+    } catch {}
   },
 };

@@ -86,6 +86,13 @@ describe('authService', () => {
     expect(GoogleSignin.signOut).toHaveBeenCalled();
   });
 
+  it('still signs out when the Google sign-out fails', async () => {
+    jest.mocked(GoogleSignin.signOut).mockRejectedValueOnce(new Error('play services'));
+
+    await expect(authService.signOut()).resolves.toBeUndefined();
+    expect(signOut).toHaveBeenCalled();
+  });
+
   it('signs in with email and password', async () => {
     await expect(authService.signInWithEmail({ email: 'a@b.co', password: 'pw' })).resolves.toBe('signedIn');
     expect(signIn).toHaveBeenCalledWith({ username: 'a@b.co', password: 'pw' });
