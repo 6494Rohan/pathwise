@@ -111,6 +111,8 @@ export default {
           enableMinifyInReleaseBuilds: true,
           enableShrinkResourcesInReleaseBuilds: true,
           useLegacyPackaging: true,
+          // Room loads each database's generated `_Impl` class by name; R8 renamed WorkManager's and the release build crashed on launch.
+          extraProguardRules: "-keep class * extends androidx.room.RoomDatabase { <init>(); }",
         },
       },
     ],
