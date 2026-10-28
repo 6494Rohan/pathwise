@@ -1,6 +1,6 @@
 # pathwise
 
-A small job-discovery app for Android and iOS, built in two days with AI as the practical assessment for Spire.AI (a small version of iExchange, with its own name, logo, backend and sample data).
+A small job-discovery app for Android and iOS, built with AI, with its own backend and sample data.
 
 You sign in, browse jobs on a map or in a searchable list, filter them, and upload your resume to fill in your profile automatically.
 

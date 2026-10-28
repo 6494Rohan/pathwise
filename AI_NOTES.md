@@ -1,12 +1,12 @@
 # AI notes
 
-How I used AI to build pathwise in two days: the tools, the main prompts at each stage, and where the AI got it wrong.
+How I used AI to build pathwise: the tools, the main prompts at each stage, and where the AI got it wrong.
 
 ## Tools
 
 | Tool | Used for |
 |---|---|
-| **Claude (web) with the Figma skill** | Designing the app screens in Figma from my notes and screenshots of the reference app |
+| **Claude (web) with the Figma skill** | Designing the app screens in Figma from my notes and reference screenshots |
 | **Figma agents** | Generating the design system: colours, type styles, spacing and radius tokens |
 | **Claude Code (Claude Opus) in VS Code** | Generating the project from our React Native starter kit, then building, testing, reviewing and committing across the app, backend and database repos |
 | **Expo, Callstack and clean-code skills** in `.claude/skills/` | Up-to-date Expo SDK 58 and React Native guidance, so the AI didn't rely on outdated training data |
@@ -14,7 +14,7 @@ How I used AI to build pathwise in two days: the tools, the main prompts at each
 
 ## How AI was used at each stage
 
-1. **Design:** Claude web with the Figma skill turned the screens I noted in the reference app into my own designs, with my own name, logo and content. Figma agents then built the design system from them.
+1. **Design:** Claude web with the Figma skill turned my notes and reference screenshots into the app's designs, with its own name, logo and content. Figma agents then built the design system from them.
 2. **Project setup:** I asked Claude to generate the React Native project from our team's starter kit (Expo, TypeScript, React Query, i18n, theme folder, tests).
 3. **Design system into code:** I gave Claude Code screenshots of the design system, and it filled in `colors.ts` (light and dark), `typography.ts`, `spacing.ts` and `radius.ts`.
 4. **Project rules:** [AGENTS.md](AGENTS.md) holds the rules every change must follow: feature folders, theme tokens only, translations, validated API responses, tests, and a SOLID check after every task. Each feature keeps its decisions in a `spec/` folder, so the next session doesn't lose context.
@@ -48,7 +48,7 @@ Lightly cleaned up for typos, in the order I used them.
 
 **Backend and database** (my role here was making the decisions; the AI proposed and built)
 - "I'm creating a backend for this app. Suggest the database type, with reasons." I chose PostgreSQL with PostGIS from its comparison.
-- "This is just a demo app, so don't create costly databases." That ruled out bigger setups; we used the smallest RDS instance with a budget alert.
+- "This is a small app, so don't create costly databases." That ruled out bigger setups; we used the smallest RDS instance with a budget alert.
 - When the AI asked how to version the backend and database, I chose two separate repos.
 - "Create a separate database folder and initialise Alembic to maintain the schema." I wanted schema changes as reviewed migrations, not hand-run SQL.
 - "Use Knex." I picked the query builder over raw SQL or an ORM for the jobs API.
